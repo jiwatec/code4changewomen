@@ -203,7 +203,7 @@ transcriber = pipeline(
 )
 print(f"Model loaded successfully on device: {device}")
 
-# Multilingual mapping for the 10 core tailoring keywords
+# Multilingual mapping for the 15 core tailoring keywords
 # Maps each keyword to its English, transliterated, and native Hindi/Kannada representations
 KEYWORDS_MAPPING = {
     "bobbin": ["bobbin", "bobin", "babin", "bambin", "बोबिन", "ಬಾಬಿನ್"],
@@ -212,10 +212,34 @@ KEYWORDS_MAPPING = {
     "needle": ["needle", "sui", "suji", "sooji", "सुई", "ಸೂಜಿ"],
     "fabric": ["fabric", "kapada", "kapda", "kapade", "kapparay", "batte", "bhatte", "bhattimattu", "कपड़ा", "कपड़े", "ಬಟ್ಟೆ"],
     "measure": ["measure", "map", "nap", "maap", "naap", "mahap", "alate", "alata", "माಪ್", "ಮಾಪ್", "माप", "नाप", "ಅಳತೆ"],
-    "hemming": ["hemming", "hemin", "himin", "heming", "हेमिंग", "ಹೆಮ್ಮಿಂಗ್"],
+    "hemming": ["hemming", "hemin", "himin", "heming", "turpai", "तूरपाई", "ಹೆಮ್ಮಿಂಗ್"],
     "pattern": ["pattern", "patan", "patran", "vinyasa", "पैटर्न", "ವಿನ್ಯಾಸ"],
     "tailor": ["tailor", "darji", "dharji", "darjee", "दर्जी", "ದರ್ಜಿ"],
-    "cut": ["cut", "katna", "kata", "katar", "kattari", "काटना", "कतरना", "ಕತ್ತರಿಸು"]
+    "cut": ["cut", "katna", "kata", "katar", "kattari", "काटना", "कतरना", "ಕತ್ತರಿಸು"],
+    "blouse": ["blouse", "choli", "kanchala", "चोली", "ಬ್ಲೌಸ್"],
+    "thread": ["thread", "dhaga", "dhaaga", "daaga", "noolu", "धागा", "ದಾರ"],
+    "sewing machine": ["machine", "silai machine", "mishin", "yantra", "सिलाई मशीन", "ಯಂತ್ರ"],
+    "lining": ["lining", "astar", "स्तर", "ಲೈನಿಂಗ್"],
+    "pleats": ["pleats", "plate", "chunnat", "चुन्नट", "ಪ್ಲೀಟ್ಸ್"]
+}
+
+# Higher weight for technical terms vs general terms
+KEYWORD_WEIGHTS = {
+    "bobbin": 1.5,
+    "seam": 1.5,
+    "hemming": 1.5,
+    "lining": 1.5,
+    "pleats": 1.5,
+    "pattern": 1.2,
+    "measure": 1.2,
+    "stitch": 1.0,
+    "needle": 1.0,
+    "fabric": 1.0,
+    "cut": 1.0,
+    "thread": 0.8,
+    "blouse": 0.8,
+    "tailor": 0.5,
+    "sewing machine": 0.5
 }
 
 @app.get("/health", response_model=HealthResponse)
@@ -332,19 +356,30 @@ async def grade_assessment(
         # Combine both texts to maximize matches across scripts and languages
         combined_text_lower = (raw_text + " " + translated_text).lower()
         
-        # Match keywords using mapping
+        # Match keywords using mapping and calculate weighted score
         keywords_found = []
+        weighted_score = 0.0
+        max_possible_weight = sum(KEYWORD_WEIGHTS.values())
+        
         for keyword_key, variants in KEYWORDS_MAPPING.items():
+            found_this_keyword = False
             for variant in variants:
                 if variant.lower() in combined_text_lower:
-                    keywords_found.append(keyword_key)
-                    break # Match found for this key, move to next keyword
+                    found_this_keyword = True
+                    break
+            
+            if found_this_keyword:
+                keywords_found.append(keyword_key)
+                weighted_score += KEYWORD_WEIGHTS.get(keyword_key, 1.0)
                     
-        # Calculate confidence score (0 to 100)
-        total_keywords = len(KEYWORDS_MAPPING)
-        confidence_score = round((len(keywords_found) / total_keywords) * 100, 2)
+        # Calculate confidence score (0 to 100) normalized by weights
+        confidence_score = round((weighted_score / max_possible_weight) * 100, 2)
         
-        status_val = AssessmentStatus.approved if confidence_score >= 50.0 else AssessmentStatus.pending
+        # Boost score slightly if they mentioned highly technical terms
+        if any(kw in keywords_found for kw in ["bobbin", "seam", "hemming", "lining", "pleats"]):
+            confidence_score = min(100.0, confidence_score * 1.1)
+        
+        status_val = AssessmentStatus.approved if confidence_score >= 40.0 else AssessmentStatus.pending
         
         assessment_id = None
         # Save to database if user_id is provided

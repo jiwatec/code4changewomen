@@ -51,6 +51,35 @@ class Certificate(Base):
     user = relationship("User", back_populates="certificates")
     submission = relationship("Submission", back_populates="certificate")
 
+class Volunteer(Base):
+    __tablename__ = "volunteers"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email = Column(String, unique=True, index=True, nullable=False)
+    phone = Column(String, unique=True, index=True, nullable=False)
+    passwordHash = Column(String, nullable=False)
+    name = Column(String, nullable=True)
+    collegeProofUrl = Column(String, nullable=True)
+    livePhotoUrl = Column(String, nullable=True)
+    isApproved = Column(Boolean, default=False)
+    volunteerCode = Column(String, unique=True, nullable=True)
+    createdAt = Column(DateTime, default=datetime.utcnow)
+
+    certifications = relationship("VolunteerCertification", back_populates="volunteer")
+
+class VolunteerCertification(Base):
+    __tablename__ = "volunteer_certifications"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    volunteerId = Column(UUID(as_uuid=True), ForeignKey("volunteers.id"), nullable=False)
+    title = Column(String, nullable=False)
+    hoursValue = Column(Integer, default=0)
+    proofUrl = Column(String, nullable=True)
+    certCode = Column(String, unique=True, nullable=False)
+    issuedAt = Column(DateTime, default=datetime.utcnow)
+
+    volunteer = relationship("Volunteer", back_populates="certifications")
+
 class Validator(Base):
     __tablename__ = "validators"
 

@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.routers import admin, user, public
+from src.routers import admin, user, public, volunteer
 
 
 app = FastAPI(title="NSS Backend API")
@@ -34,6 +34,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 app.include_router(admin.router)
 app.include_router(user.router)
 app.include_router(public.router)
+app.include_router(volunteer.router)
 
 @app.get("/")
 def read_root():

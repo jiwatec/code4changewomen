@@ -2,12 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File,
 from sqlalchemy.orm import Session
 from datetime import datetime
 import uuid
+import urllib.request
+import urllib.parse
+import json
 from typing import List
 
 from src.dependencies import get_current_user, get_db
 from src.schemas import OTPRequest, OTPVerify, Token, UserResponse, SubmissionResponse
 from src.models import User, Submission
 from src.services.otp_service import generate_otp, get_otp_expiry, send_otp_sms
+from src.core.config import settings
 from src.core.security import create_access_token
 from src.services.storage_service import upload_file_to_cloud
 router = APIRouter(prefix="/api/users", tags=["users"])
@@ -81,6 +85,37 @@ async def submit_skill(
     background_tasks.add_task(process_ai_grading, str(new_submission.id), file.filename, file.content_type, media_url)
 
     return new_submission
+
+@router.get("/jobs")
+def get_jobs(skill: str, current_user: User = Depends(get_current_user)):
+    """Fetch jobs from Adzuna API or return mock fallback if keys are missing."""
+    if settings.ADZUNA_APP_ID and settings.ADZUNA_APP_KEY:
+        try:
+            query = urllib.parse.quote(skill)
+            url = f"https://api.adzuna.com/v1/api/jobs/in/search/1?app_id={settings.ADZUNA_APP_ID}&app_key={settings.ADZUNA_APP_KEY}&what={query}&results_per_page=3"
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req) as response:
+                data = json.loads(response.read().decode())
+                
+                jobs = []
+                for idx, job in enumerate(data.get('results', [])):
+                    jobs.append({
+                        "id": idx + 1,
+                        "titleKey": job.get("title", "Job"),
+                        "companyKey": job.get("company", {}).get("display_name", "Company"),
+                        "locationKey": job.get("location", {}).get("display_name", "Location")
+                    })
+                return jobs
+        except Exception as e:
+            print(f"Error fetching from Adzuna: {e}")
+            # Fallback to mock on error
+
+    # Mock Fallback Data
+    return [
+        { "id": 1, "titleKey": f"Senior {skill.capitalize()} Specialist", "companyKey": "Local Co-op", "locationKey": "Downtown" },
+        { "id": 2, "titleKey": f"{skill.capitalize()} Instructor", "companyKey": "Skill Center", "locationKey": "Community Hub" },
+        { "id": 3, "titleKey": "Master Craftsperson", "companyKey": "Artisan Guild", "locationKey": "Market District" }
+    ]
 
 async def process_ai_grading(submission_id: str, filename: str, content_type: str, media_url: str):
     """

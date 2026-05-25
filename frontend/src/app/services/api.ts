@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 async function request(endpoint: string, options: RequestInit = {}) {
   const token = localStorage.getItem('token');
@@ -8,6 +8,11 @@ async function request(endpoint: string, options: RequestInit = {}) {
 
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  // Auto-detect if body is FormData, if not and body exists, set Content-Type JSON
+  if (options.body && !(options.body instanceof FormData) && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
   }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -28,22 +33,19 @@ export const api = {
   requestOTP: (phone: string) => 
     request('/users/request-otp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone }),
     }),
   
   verifyOTP: (phone: string, otp: string) =>
     request('/users/verify-otp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, otp }),
     }),
 
-  // Validator Auth
+  // Validator/Admin Auth
   login: (username: string, password: string) =>
     request('/admin/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     }),
 
@@ -52,6 +54,12 @@ export const api = {
     request('/volunteers/register', {
       method: 'POST',
       body: formData,
+    }),
+    
+  loginVolunteer: (email: string, password: string) =>
+    request('/volunteers/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
     }),
 
   // Artisan Actions
@@ -68,6 +76,18 @@ export const api = {
   },
 
   getSubmissions: () => request('/users/submissions'),
+
+  getJobs: (skill: string) =>
+    request(`/users/jobs?skill=${encodeURIComponent(skill)}`),
+
+  // Volunteer Actions
+  getVolunteerDashboard: () => request('/volunteers/dashboard'),
+  
+  addVolunteerCertification: (formData: FormData) =>
+    request('/volunteers/certifications', {
+      method: 'POST',
+      body: formData,
+    }),
 
   // Validator Actions
   getPendingSubmissions: () => request('/admin/submissions/pending'),

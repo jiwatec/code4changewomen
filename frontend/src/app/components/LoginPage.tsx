@@ -19,11 +19,11 @@ const langLabels: Record<Language, string> = {
 
 export function LoginPage() {
   const [userType, setUserType] = useState<'artisan' | 'validator'>('artisan');
-  const [phoneNumber, setPhoneNumber] = useState('+91 ');
+  const [phoneNumber, setPhoneNumber] = useState('+91 9876543210');
   const [showOTP, setShowOTP] = useState(false);
-  const [otp, setOtp] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('123456');
+  const [email, setEmail] = useState('validator@nss.org');
+  const [password, setPassword] = useState('password123');
   const [langOpen, setLangOpen] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();

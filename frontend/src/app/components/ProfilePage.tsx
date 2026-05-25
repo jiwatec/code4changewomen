@@ -12,11 +12,7 @@ interface Job {
   locationKey: string;
 }
 
-const mockJobs: Job[] = [
-  { id: 1, titleKey: 'Senior Stitcher', companyKey: 'Local Boutique', locationKey: 'Downtown' },
-  { id: 2, titleKey: 'Pattern Designer', companyKey: 'Fashion Co-op', locationKey: 'Market District' },
-  { id: 3, titleKey: 'Tailoring Instructor', companyKey: 'Skill Center', locationKey: 'Community Hub' },
-];
+
 
 const serif = { fontFamily: '"Instrument Serif", serif' };
 const sans = { fontFamily: '"Inter", system-ui, sans-serif' };
@@ -25,6 +21,7 @@ export function ProfilePage() {
   const [isJobsExpanded, setIsJobsExpanded] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const { t } = useLanguage();
   const navigate = useNavigate();
 
@@ -56,6 +53,14 @@ export function ProfilePage() {
       hash: '7f3a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e9e2b'
     }
   };
+
+  useEffect(() => {
+    if (approvedSubmission?.trade) {
+      api.getJobs(approvedSubmission.trade)
+        .then(data => setJobs(data))
+        .catch(err => console.error('Failed to fetch jobs', err));
+    }
+  }, [approvedSubmission?.trade]);
 
   return (
     <div
@@ -206,7 +211,7 @@ export function ProfilePage() {
                   </h3>
 
                   <div className="space-y-2">
-                    {mockJobs.map((job) => (
+                    {jobs.map((job) => (
                       <motion.div
                         key={job.id}
                         initial={{ opacity: 0, x: -10 }}
@@ -216,10 +221,11 @@ export function ProfilePage() {
                       >
                         <div>
                           <div className="text-zinc-900" style={{ fontSize: '15px' }}>
-                            {t(job.titleKey)}
+                            {/* We use t() as fallback but mostly it returns the literal API strings now */}
+                            {t(job.titleKey) === job.titleKey ? job.titleKey : t(job.titleKey)}
                           </div>
                           <div className="text-zinc-500 mt-0.5" style={{ fontSize: '13px' }}>
-                            {t(job.companyKey)} · {t(job.locationKey)}
+                            {t(job.companyKey) === job.companyKey ? job.companyKey : t(job.companyKey)} · {t(job.locationKey) === job.locationKey ? job.locationKey : t(job.locationKey)}
                           </div>
                         </div>
                         <button

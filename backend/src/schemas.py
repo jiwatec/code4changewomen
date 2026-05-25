@@ -83,6 +83,39 @@ class CertificateResponse(CertificateBase):
         from_attributes = True
 
 # -----------------
+# Volunteer Schemas
+# -----------------
+class VolunteerBase(BaseModel):
+    email: EmailStr
+    phone: str
+    name: Optional[str] = None
+
+class VolunteerResponse(VolunteerBase):
+    id: UUID
+    isApproved: bool
+    volunteerCode: Optional[str] = None
+    createdAt: datetime
+
+    class Config:
+        from_attributes = True
+
+class CertificationBase(BaseModel):
+    title: str
+    hoursValue: int
+
+class CertificationCreate(CertificationBase):
+    pass
+
+class CertificationResponse(CertificationBase):
+    id: UUID
+    certCode: str
+    proofUrl: Optional[str] = None
+    issuedAt: datetime
+
+    class Config:
+        from_attributes = True
+
+# -----------------
 # Validator Schemas
 # -----------------
 class ValidatorResponse(BaseModel):

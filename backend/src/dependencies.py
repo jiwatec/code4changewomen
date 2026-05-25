@@ -4,7 +4,7 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from src.database import SessionLocal
 from src.core.config import settings
-from src.models import Validator, User
+from src.models import Validator, User, Volunteer
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/users/verify-otp")
 
@@ -64,3 +64,17 @@ def get_current_user(current_user: dict = Depends(get_current_user_from_token), 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+def get_current_volunteer(current_user: dict = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
+    if current_user.get("role") != "volunteer":
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+    
+    try:
+        vol_uuid = uuid.UUID(current_user.get("id"))
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
+
+    volunteer = db.query(Volunteer).filter(Volunteer.id == vol_uuid).first()
+    if not volunteer:
+        raise HTTPException(status_code=404, detail="Volunteer not found")
+    return volunteer
