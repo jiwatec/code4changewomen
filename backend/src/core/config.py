@@ -2,8 +2,13 @@ import os
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./test.db")
+    DATABASE_URL: str
+    DIRECT_URL: str = ""
     SECRET_KEY: str = os.getenv("SECRET_KEY", "supersecretkey")
+    
+    @property
+    def sqlalchemy_url(self) -> str:
+        return self.DATABASE_URL.replace("?pgbouncer=true", "").replace("&pgbouncer=true", "")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 # 1 week
     
