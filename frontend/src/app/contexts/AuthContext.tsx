@@ -10,15 +10,21 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userType, setUserType] = useState<'artisan' | 'validator' | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+  const [userType, setUserType] = useState<'artisan' | 'validator' | null>(
+    (localStorage.getItem('userType') as any) || null
+  );
 
-  const login = (type: 'artisan' | 'validator') => {
+  const login = (type: 'artisan' | 'validator', token: string) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('userType', type);
     setIsLoggedIn(true);
     setUserType(type);
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userType');
     setIsLoggedIn(false);
     setUserType(null);
   };

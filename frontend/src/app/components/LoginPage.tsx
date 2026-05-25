@@ -6,6 +6,8 @@ import { LoginToggle } from './LoginToggle';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage, Language } from '../contexts/LanguageContext';
 
+import { api } from '../services/api';
+
 const serif = { fontFamily: '"Instrument Serif", serif' };
 const sans = { fontFamily: '"Inter", system-ui, sans-serif' };
 
@@ -27,14 +29,34 @@ export function LoginPage() {
   const { login } = useAuth();
   const { language, setLanguage, t } = useLanguage();
 
-  const handleArtisanLogin = () => {
-    login('artisan');
-    navigate('/hub');
+  const handleSendOTP = async () => {
+    try {
+      await api.requestOTP(phoneNumber);
+      setShowOTP(true);
+      toast.success('OTP sent successfully!');
+    } catch (err: any) {
+      toast.error(err.message);
+    }
   };
 
-  const handleValidatorLogin = () => {
-    login('validator');
-    navigate('/admin');
+  const handleArtisanLogin = async () => {
+    try {
+      const res = await api.verifyOTP(phoneNumber, otp);
+      login('artisan', res.access_token);
+      navigate('/hub');
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
+  const handleValidatorLogin = async () => {
+    try {
+      const res = await api.login(email, password);
+      login('validator', res.access_token);
+      navigate('/admin');
+    } catch (err: any) {
+      toast.error(err.message);
+    }
   };
 
   const inputClass =
@@ -141,7 +163,7 @@ export function LoginPage() {
                     </div>
 
                     <button
-                      onClick={() => setShowOTP(true)}
+                      onClick={handleSendOTP}
                       className="w-full bg-[#2F6BFF] text-white py-3.5 rounded-full hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
                       style={{ fontSize: '15px' }}
                     >

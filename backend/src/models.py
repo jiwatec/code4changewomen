@@ -1,53 +1,60 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Boolean, Column, String, Integer, DateTime, ForeignKey
+from sqlalchemy import Boolean, Column, String, Integer, DateTime, ForeignKey, Float
 from sqlalchemy import Uuid as UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-class Volunteer(Base):
-    __tablename__ = "volunteers"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    volunteerCode = Column(String, unique=True, index=True, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
-    phone = Column(String, unique=True, index=True, nullable=False)
-    passwordHash = Column(String, nullable=False)
-    collegeProofUrl = Column(String, nullable=False)
-    livePhotoUrl = Column(String, nullable=False)
-    isApproved = Column(Boolean, default=False)
-    createdAt = Column(DateTime, default=datetime.utcnow)
-
-    certifications = relationship("Certification", back_populates="volunteer", cascade="all, delete")
-    usersAssigned = relationship("User", back_populates="associatedVolunteer")
-
-class Certification(Base):
-    __tablename__ = "certifications"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    certCode = Column(String, unique=True, index=True, nullable=False)
-    title = Column(String, nullable=False)
-    hoursValue = Column(Integer, nullable=False)
-    proofUrl = Column(String, nullable=True)
-    volunteerId = Column(UUID(as_uuid=True), ForeignKey("volunteers.id"), nullable=False)
-    issuedAt = Column(DateTime, default=datetime.utcnow)
-
-    volunteer = relationship("Volunteer", back_populates="certifications")
-
 class User(Base):
     __tablename__ = "users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    userCode = Column(String, unique=True, index=True, nullable=False)
     phone = Column(String, unique=True, index=True, nullable=False)
+    name = Column(String, nullable=True)
+    trade = Column(String, nullable=True)
     otp = Column(String, nullable=True)
     otpExpiry = Column(DateTime, nullable=True)
-    scoreRating = Column(Integer, default=0)
-    hasWatchedTutorial = Column(Boolean, default=False)
-    encryptedVideoUrl = Column(String, nullable=True)
-    associatedVolId = Column(UUID(as_uuid=True), ForeignKey("volunteers.id"), nullable=True)
     createdAt = Column(DateTime, default=datetime.utcnow)
 
-    associatedVolunteer = relationship("Volunteer", back_populates="usersAssigned")
+    submissions = relationship("Submission", back_populates="user")
+    certificates = relationship("Certificate", back_populates="user")
+
+class Submission(Base):
+    __tablename__ = "submissions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    userId = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    trade = Column(String, nullable=False)
+    mediaUrl = Column(String, nullable=False)
+    transcript = Column(String, nullable=True)
+    aiScore = Column(Float, default=0.0)
+    status = Column(String, default="pending") # pending, approved, rejected
+    createdAt = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="submissions")
+    certificate = relationship("Certificate", back_populates="submission", uselist=False)
+
+class Certificate(Base):
+    __tablename__ = "certificates"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    userId = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    submissionId = Column(UUID(as_uuid=True), ForeignKey("submissions.id"), nullable=False)
+    certCode = Column(String, unique=True, index=True, nullable=False)
+    hash = Column(String, nullable=False)
+    issuedAt = Column(DateTime, default=datetime.utcnow)
+    skillScore = Column(Float, nullable=False)
+    professionalismScore = Column(Float, nullable=False)
+
+    user = relationship("User", back_populates="certificates")
+    submission = relationship("Submission", back_populates="certificate")
+
+class Validator(Base):
+    __tablename__ = "validators"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email = Column(String, unique=True, index=True, nullable=False)
+    passwordHash = Column(String, nullable=False)
+    name = Column(String, nullable=False)

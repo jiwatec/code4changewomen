@@ -4,9 +4,9 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from src.database import SessionLocal
 from src.core.config import settings
-from src.models import Volunteer, User
+from src.models import Validator, User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login") # This might need adjustment depending on router setup
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/users/verify-otp")
 
 def get_db():
     db = SessionLocal()
@@ -15,7 +15,7 @@ def get_db():
     finally:
         db.close()
 
-def get_current_user_from_token(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_current_user_from_token(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -32,20 +32,17 @@ def get_current_user_from_token(token: str = Depends(oauth2_scheme), db: Session
 
     return {"id": id, "role": role}
 
-def get_current_admin(current_user: dict = Depends(get_current_user_from_token)):
-    if current_user.get("role") != "admin":
+def get_current_validator(current_user: dict = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
+    if current_user.get("role") != "validator" and current_user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Not enough permissions")
-    return current_user
+    
+    if current_user.get("role") == "admin":
+        return {"id": "admin", "role": "admin", "name": "Admin"}
 
-def get_current_volunteer(current_user: dict = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
-    if current_user.get("role") != "volunteer":
-        raise HTTPException(status_code=403, detail="Not enough permissions")
-    volunteer = db.query(Volunteer).filter(Volunteer.id == current_user.get("id")).first()
-    if not volunteer:
-        raise HTTPException(status_code=404, detail="Volunteer not found")
-    if not volunteer.isApproved:
-        raise HTTPException(status_code=403, detail="Volunteer is not approved yet")
-    return volunteer
+    validator = db.query(Validator).filter(Validator.id == current_user.get("id")).first()
+    if not validator:
+        raise HTTPException(status_code=404, detail="Validator not found")
+    return validator
 
 def get_current_user(current_user: dict = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
     if current_user.get("role") != "user":

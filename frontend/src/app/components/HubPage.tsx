@@ -5,6 +5,8 @@ import { motion } from 'motion/react';
 import { toast, Toaster } from 'sonner';
 import { useLanguage } from '../contexts/LanguageContext';
 
+import { api } from '../services/api';
+
 const skillKeys = [
   'tailoring',
   'handicrafts',
@@ -43,13 +45,26 @@ export function HubPage() {
     if (file) setUploadedFile(file);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedSkill || !uploadedFile) {
       toast.error('Please select a skill and upload a video');
       return;
     }
-    toast.success('Video uploaded! Pending Review.');
-    setTimeout(() => navigate('/profile'), 1500);
+    
+    const promise = api.submitSkill(selectedSkill, uploadedFile);
+    
+    toast.promise(promise, {
+      loading: 'Uploading video and generating AI transcript...',
+      success: 'Video uploaded! Pending Review.',
+      error: (err) => err.message || 'Upload failed',
+    });
+
+    try {
+      await promise;
+      setTimeout(() => navigate('/profile'), 1500);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

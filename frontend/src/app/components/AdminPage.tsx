@@ -1,16 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Play, CheckCircle, Clock, XCircle, BarChart3, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast, Toaster } from 'sonner';
+import { api } from '../services/api';
 
 interface Submission {
   id: string;
-  phoneNumber: string;
-  skill: string;
-  submittedAt: string;
+  phoneNumber?: string;
+  phone?: string;
+  skill?: string;
+  trade?: string;
+  submittedAt?: string;
+  createdAt?: string;
   status: 'pending' | 'approved' | 'rejected';
   professionalismScore?: number;
   skillScore?: number;
+  transcript?: string;
+  mediaUrl?: string;
 }
 
 const initialSubmissions: Submission[] = [
@@ -55,16 +61,64 @@ function StatCard({
 }
 
 export function AdminPage() {
-  const [submissions, setSubmissions] = useState(initialSubmissions);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [isReviewMode, setIsReviewMode] = useState(false);
   const [skillScore, setSkillScore] = useState(75);
   const [professionalismScore, setProfessionalismScore] = useState(75);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchSubmissions();
+  }, []);
+
+  const fetchSubmissions = async () => {
+    try {
+      setLoading(true);
+      const data = await api.getPendingSubmissions();
+      setSubmissions(data);
+    } catch (err: any) {
+      toast.error('Failed to fetch submissions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAccept = async () => {
+    if (!selectedSubmission) return;
+    try {
+      await api.approveSubmission(selectedSubmission.id, skillScore, professionalismScore);
+      toast.success('Certificate Issued!');
+      setIsReviewMode(false);
+      setSelectedSubmission(null);
+      fetchSubmissions();
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
+  const handleDecline = async () => {
+    if (!selectedSubmission) return;
+    try {
+      await api.rejectSubmission(selectedSubmission.id);
+      toast.error('Application declined');
+      setIsReviewMode(false);
+      setSelectedSubmission(null);
+      fetchSubmissions();
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
+
+  const handleBackToDashboard = () => {
+    setIsReviewMode(false);
+    setSelectedSubmission(null);
+  };
 
   const stats = {
-    approved: submissions.filter((s) => s.status === 'approved').length,
-    pending: submissions.filter((s) => s.status === 'pending').length,
-    rejected: submissions.filter((s) => s.status === 'rejected').length,
+    approved: 0,
+    pending: submissions.length,
+    rejected: 0,
     total: submissions.length,
   };
 
@@ -73,37 +127,6 @@ export function AdminPage() {
     setIsReviewMode(true);
     setSkillScore(75);
     setProfessionalismScore(75);
-  };
-
-  const handleAccept = () => {
-    if (!selectedSubmission) return;
-    toast.success('Certificate Minted on Blockchain!');
-    setSubmissions(
-      submissions.map((s) =>
-        s.id === selectedSubmission.id
-          ? { ...s, status: 'approved' as const, skillScore, professionalismScore }
-          : s
-      )
-    );
-    setIsReviewMode(false);
-    setSelectedSubmission(null);
-  };
-
-  const handleDecline = () => {
-    if (!selectedSubmission) return;
-    toast.error('Application declined');
-    setSubmissions(
-      submissions.map((s) =>
-        s.id === selectedSubmission.id ? { ...s, status: 'rejected' as const } : s
-      )
-    );
-    setIsReviewMode(false);
-    setSelectedSubmission(null);
-  };
-
-  const handleBackToDashboard = () => {
-    setIsReviewMode(false);
-    setSelectedSubmission(null);
   };
 
   return (
@@ -200,11 +223,11 @@ export function AdminPage() {
                           </div>
                           <div>
                             <div className="text-zinc-900" style={{ fontSize: '15px' }}>
-                              Submission {submission.id}
-                              <span className="text-zinc-400"> · {submission.skill}</span>
+                              Submission {submission.id.slice(0, 8)}
+                              <span className="text-zinc-400"> · {submission.trade || submission.skill}</span>
                             </div>
                             <div className="text-zinc-500 mt-0.5" style={{ fontSize: '13px' }}>
-                              {submission.phoneNumber} · {submission.submittedAt}
+                              {submission.phone || submission.phoneNumber} · {submission.createdAt ? new Date(submission.createdAt).toLocaleDateString() : submission.submittedAt}
                             </div>
                           </div>
                         </div>
@@ -291,10 +314,10 @@ export function AdminPage() {
                   className="text-zinc-900 leading-[0.95] tracking-tight"
                   style={{ ...serif, fontSize: 'clamp(44px, 6vw, 72px)' }}
                 >
-                  Reviewing <span className="italic">{selectedSubmission?.skill}</span>
+                  Reviewing <span className="italic">{selectedSubmission?.trade || selectedSubmission?.skill}</span>
                 </h1>
                 <p className="text-zinc-500 mt-3" style={{ fontSize: '15px' }}>
-                  {selectedSubmission?.phoneNumber}
+                  {selectedSubmission?.phone || selectedSubmission?.phoneNumber}
                 </p>
               </div>
 

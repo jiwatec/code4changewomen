@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from src.database import engine
 from src import models
 
-from src.routers import admin, volunteer, user, public
+from src.routers import admin, user, public
 
 # Create all tables (in production, use Alembic migrations instead)
 models.Base.metadata.create_all(bind=engine)
@@ -37,7 +37,6 @@ async def general_exception_handler(request: Request, exc: Exception):
     )
 
 app.include_router(admin.router)
-app.include_router(volunteer.router)
 app.include_router(user.router)
 app.include_router(public.router)
 

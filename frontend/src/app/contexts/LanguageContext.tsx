@@ -169,10 +169,10 @@ const translations: Translations = {
     kn: 'ತಯಾರಿಕೆ',
   },
   // Profile Page
-  'verified_artisan': {
-    en: 'Verified Artisan',
-    hi: 'सत्यापित कारीगर',
-    kn: 'ಪರಿಶೀಲಿಸಿದ ಕುಶಲಕರ್ಮಿ',
+  'expert': {
+    en: 'Expert',
+    hi: 'विशेषज्ञ',
+    kn: 'ತಜ್ಞ',
   },
   'my_profile': {
     en: 'My Profile',
