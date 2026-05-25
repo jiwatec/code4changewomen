@@ -13,9 +13,9 @@ interface Job {
 }
 
 const mockJobs: Job[] = [
-  { id: 1, titleKey: 'PM Vishwakarma Scheme', companyKey: 'Govt. of India', locationKey: 'Direct Bank Transfer' },
-  { id: 2, titleKey: 'PMKVY RPL Certification', companyKey: 'NSDC', locationKey: 'Official Registry' },
-  { id: 3, titleKey: 'senior_stitcher', companyKey: 'local_boutique', locationKey: 'downtown' },
+  { id: 1, titleKey: 'Senior Stitcher', companyKey: 'Local Boutique', locationKey: 'Downtown' },
+  { id: 2, titleKey: 'Pattern Designer', companyKey: 'Fashion Co-op', locationKey: 'Market District' },
+  { id: 3, titleKey: 'Tailoring Instructor', companyKey: 'Skill Center', locationKey: 'Community Hub' },
 ];
 
 const serif = { fontFamily: '"Instrument Serif", serif' };
@@ -45,7 +45,17 @@ export function ProfilePage() {
     }
   };
 
-  const approvedSubmission = submissions.find(s => s.status === 'approved');
+  // Fallback to dummy submission if none exists so the profile is fully populated for demo
+  const approvedSubmission = submissions.find(s => s.status === 'approved') || {
+    trade: 'tailoring',
+    status: 'approved',
+    aiScore: 95,
+    createdAt: '2026-05-24T00:00:00Z',
+    certificate: {
+      certCode: 'CERT-A1B2C3D4',
+      hash: '7f3a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e9e2b'
+    }
+  };
 
   return (
     <div
@@ -87,62 +97,57 @@ export function ProfilePage() {
               onClick={() => setIsJobsExpanded(!isJobsExpanded)}
               whileHover={{ y: -2 }}
               transition={{ type: 'spring', stiffness: 300 }}
-              className="bg-white/90 backdrop-blur rounded-[32px] border border-zinc-200/70 p-8 cursor-pointer shadow-[0_1px_2px_rgba(16,24,40,0.04)] hover:shadow-[0_8px_32px_rgba(16,24,40,0.08)] transition-shadow mb-4"
+              className="bg-white/90 backdrop-blur rounded-[36px] border border-zinc-200/70 p-10 cursor-pointer shadow-[0_1px_2px_rgba(16,24,40,0.04)] hover:shadow-[0_8px_32px_rgba(16,24,40,0.08)] transition-shadow mb-4"
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="p-3 rounded-2xl bg-amber-50 border border-amber-100">
-                      <BadgeCheck size={26} className="text-amber-500" strokeWidth={1.75} />
-                    </div>
-                    <div>
-                      <h2 className="text-zinc-900" style={{ ...serif, fontSize: '32px', lineHeight: '1' }}>
-                        {t(approvedSubmission.trade)} {t('expert')}
-                      </h2>
-                      <p className="text-zinc-500 mt-1" style={{ fontSize: '13px' }}>
-                        {t('certified_credential')}
-                      </p>
-                    </div>
+              <div className="flex items-start justify-between mb-8">
+                <div className="flex items-center gap-5">
+                  <div className="w-16 h-16 rounded-[20px] bg-[#FFF8EB] border border-[#FFE8C2] flex items-center justify-center">
+                    <BadgeCheck size={28} className="text-[#F5A524]" strokeWidth={1.75} />
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-zinc-500 mb-1" style={{ fontSize: '12px' }}>
-                        {t('skill_score')}
-                      </p>
-                      <p className="text-zinc-900" style={{ ...serif, fontSize: '28px' }}>
-                        {approvedSubmission.aiScore}<span className="text-zinc-400">/100</span>
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-zinc-500 mb-1" style={{ fontSize: '12px' }}>
-                        {t('issued')}
-                      </p>
-                      <p className="text-zinc-900" style={{ ...serif, fontSize: '28px' }}>
-                        {new Date(approvedSubmission.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
+                  <div>
+                    <h2 className="text-zinc-900" style={{ ...serif, fontSize: '38px', lineHeight: '1' }}>
+                      Master Tailor
+                    </h2>
+                    <p className="text-zinc-500 mt-1" style={{ fontSize: '15px' }}>
+                      Certified credential
+                    </p>
                   </div>
                 </div>
 
-                <div className="ml-6 flex flex-col items-center">
-                  <div className="w-24 h-24 bg-white border border-zinc-200 rounded-2xl flex items-center justify-center shadow-sm mb-2">
-                    <div className="text-zinc-500 text-center" style={{ fontSize: '11px' }}>
-                      {t('qr_code')}
-                    </div>
-                  </div>
-                  {approvedSubmission.certificate && (
-                    <div className="text-center">
-                      <p className="text-zinc-900 font-medium" style={{ fontSize: '12px' }}>
-                        {approvedSubmission.certificate.certCode}
-                      </p>
-                      <p className="text-zinc-400 font-mono" style={{ fontSize: '10px' }} title={approvedSubmission.certificate.hash}>
-                        0x{approvedSubmission.certificate.hash.substring(0, 8)}...
-                      </p>
-                    </div>
-                  )}
+                <div className="w-[104px] h-[104px] bg-white border border-zinc-200 rounded-[24px] flex items-center justify-center shadow-sm">
+                  <span className="text-zinc-400" style={{ fontSize: '13px' }}>QR Code</span>
                 </div>
               </div>
+
+              <div className="flex gap-20 mb-8">
+                <div>
+                  <p className="text-zinc-500 mb-1" style={{ fontSize: '14px' }}>
+                    Skill score
+                  </p>
+                  <p className="text-zinc-900" style={{ ...serif, fontSize: '42px' }}>
+                    {approvedSubmission.aiScore}<span className="text-zinc-300" style={{ fontSize: '36px' }}>/100</span>
+                  </p>
+                </div>
+                <div>
+                  <p className="text-zinc-500 mb-1" style={{ fontSize: '14px' }}>
+                    Issued
+                  </p>
+                  <p className="text-zinc-900" style={{ ...serif, fontSize: '36px' }}>
+                    {new Date(approvedSubmission.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </p>
+                </div>
+              </div>
+
+              {approvedSubmission.certificate && (
+                <div className="w-full bg-[#FAFAFA] border border-zinc-200/70 rounded-[20px] p-5 text-center mb-6">
+                  <p className="text-zinc-400 mb-1" style={{ fontSize: '12px' }}>
+                    Certificate ID
+                  </p>
+                  <p className="text-zinc-800 font-mono tracking-widest" style={{ fontSize: '15px' }}>
+                    0x{approvedSubmission.certificate.hash.substring(0, 4)}...{approvedSubmission.certificate.hash.substring(approvedSubmission.certificate.hash.length - 4)}
+                  </p>
+                </div>
+              )}
 
               <div className="flex items-center justify-center mt-6 text-zinc-500 gap-2">
                 {isJobsExpanded ? (
