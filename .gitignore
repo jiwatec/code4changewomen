@@ -1,6 +1,7 @@
 # ── Environment & Virtual Envs ──
 venv/
 .env
+backend/firebase-credentials.json
 
 # ── Python Generated ──
 __pycache__/
@@ -12,11 +13,8 @@ node_modules/
 # ── Build Output ──
 dist/
 *.local
-<<<<<<< HEAD
-.env
 .env.local
 .env.*.local
-=======
 
 # ── Database ──
 *.db
@@ -28,4 +26,3 @@ dist/
 .vscode/
 .DS_Store
 Thumbs.db
->>>>>>> 1b2e248b6dae14bee13a7e16523ad924bdd526fd
