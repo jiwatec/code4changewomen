@@ -1,6 +1,6 @@
 # Code4Change Women - RPL Certification Platform
 
-**Keep It Simple & Stupid (KISS) Architecture**
+** Architecture**
 
 This platform empowers rural artisans by bridging the gap between their unverified skills and government recognition. 
 
