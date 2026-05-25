@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { UploadCloud, ChevronDown } from 'lucide-react';
+import { UploadCloud, ChevronDown, Mic } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast, Toaster } from 'sonner';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -137,9 +137,14 @@ export function HubPage() {
 
             {/* Upload */}
             <div className="mb-7">
-              <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
-                {t('video_proof')}
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-zinc-500" style={{ fontSize: '13px' }}>
+                  {t('video_proof')}
+                </label>
+                <div className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100" style={{ fontSize: '11px' }}>
+                  <Mic size={12} /> Voice-First UI
+                </div>
+              </div>
               <motion.div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}

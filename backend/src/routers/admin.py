@@ -89,7 +89,8 @@ def approve_submission(
     # Generate Certificate
     cert_code = f"CERT-{str(uuid.uuid4())[:8].upper()}"
     payload = f"{submission.id}-{submission.transcript}-{cert_code}"
-    cert_hash = hashlib.sha256(payload.encode()).hexdigest()
+    # Keccak256 equivalent
+    cert_hash = hashlib.sha3_256(payload.encode()).hexdigest()
     
     certificate = Certificate(
         userId=submission.userId,

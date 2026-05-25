@@ -13,9 +13,9 @@ interface Job {
 }
 
 const mockJobs: Job[] = [
-  { id: 1, titleKey: 'senior_stitcher', companyKey: 'local_boutique', locationKey: 'downtown' },
-  { id: 2, titleKey: 'pattern_designer', companyKey: 'fashion_coop', locationKey: 'market_district' },
-  { id: 3, titleKey: 'tailoring_instructor', companyKey: 'skill_center', locationKey: 'community_hub' },
+  { id: 1, titleKey: 'PM Vishwakarma Scheme', companyKey: 'Govt. of India', locationKey: 'Direct Bank Transfer' },
+  { id: 2, titleKey: 'PMKVY RPL Certification', companyKey: 'NSDC', locationKey: 'Official Registry' },
+  { id: 3, titleKey: 'senior_stitcher', companyKey: 'local_boutique', locationKey: 'downtown' },
 ];
 
 const serif = { fontFamily: '"Instrument Serif", serif' };
