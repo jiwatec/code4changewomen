@@ -1,10 +1,15 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from src.database import db
+from sqlalchemy.exc import SQLAlchemyError
+
+from src.database import engine
+from src import models
 
 from src.routers import admin, user, public
 
+# Create all tables (in production, use Alembic migrations instead)
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="NSS Backend API")
 
@@ -16,6 +21,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Exception handlers
+@app.exception_handler(SQLAlchemyError)
+async def sqlalchemy_exception_handler(request: Request, exc: SQLAlchemyError):
+    return JSONResponse(
+        status_code=500,
+        content={"message": "Database error occurred", "details": str(exc)},
+    )
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):

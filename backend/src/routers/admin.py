@@ -1,20 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 from typing import List
 import hashlib
 import uuid
 
-<<<<<<< HEAD
-from src.dependencies import get_current_admin, get_db
-from src.schemas import AdminLoginRequest, Token, VolunteerResponse
-from src.core.config import settings
-from src.core.security import create_access_token
-=======
 from src.dependencies import get_current_validator, get_db
 from src.schemas import AdminLoginRequest, Token, SubmissionResponse
 from src.models import Submission, Certificate, User, Validator
 from src.core.config import settings
 from src.core.security import create_access_token, verify_password
->>>>>>> 1ecf60759c5880687b136805db2655f3eda0febb
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -33,22 +27,6 @@ def admin_login(login_data: AdminLoginRequest, db: Session = Depends(get_db)):
 
     raise HTTPException(status_code=401, detail="Incorrect username or password")
 
-<<<<<<< HEAD
-@router.get("/volunteers/pending", response_model=List[VolunteerResponse])
-def get_pending_volunteers(db = Depends(get_db), current_admin: dict = Depends(get_current_admin)):
-    docs = db.collection('volunteers').where('isApproved', '==', False).get()
-    return [doc.to_dict() for doc in docs]
-
-@router.put("/volunteers/{id}/approve")
-def approve_volunteer(id: str, db = Depends(get_db), current_admin: dict = Depends(get_current_admin)):
-    doc_ref = db.collection('volunteers').document(id)
-    doc = doc_ref.get()
-    if not doc.exists:
-        raise HTTPException(status_code=404, detail="Volunteer not found")
-    
-    doc_ref.update({"isApproved": True})
-    return {"message": "Volunteer approved successfully"}
-=======
 @router.get("/submissions/pending", response_model=List[SubmissionResponse])
 def get_pending_submissions(
     db: Session = Depends(get_db), 
@@ -89,7 +67,6 @@ def approve_submission(
     # Generate Certificate
     cert_code = f"CERT-{str(uuid.uuid4())[:8].upper()}"
     payload = f"{submission.id}-{submission.transcript}-{cert_code}"
-    # Keccak256 equivalent
     cert_hash = hashlib.sha3_256(payload.encode()).hexdigest()
     
     certificate = Certificate(
@@ -118,4 +95,3 @@ def reject_submission(
     submission.status = "rejected"
     db.commit()
     return {"message": "Submission rejected"}
->>>>>>> 1ecf60759c5880687b136805db2655f3eda0febb
