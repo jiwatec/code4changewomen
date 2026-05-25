@@ -1,4 +1,25 @@
+# ── Environment & Virtual Envs ──
+venv/
+.env
+
+# ── Python Generated ──
+__pycache__/
+*.pyc
+
+# ── Node.js ──
 node_modules/
+
+# ── Build Output ──
 dist/
-.DS_Store
 *.local
+
+# ── Database ──
+*.db
+
+# ── Logs ──
+*.log
+
+# ── Editor / OS ──
+.vscode/
+.DS_Store
+Thumbs.db
