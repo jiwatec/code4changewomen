@@ -54,16 +54,16 @@ export function HubPage() {
       return;
     }
     
-    if (isProxy && (!candidateName || !candidatePhone || !candidateLocation)) {
-      toast.error('Please fill in all candidate details');
+    if (!candidateName || !candidatePhone || !candidateLocation) {
+      toast.error('Please fill in all details');
       return;
     }
     
-    const candidateData = isProxy ? {
+    const candidateData = {
       name: candidateName,
       phone: candidatePhone,
       location: candidateLocation
-    } : undefined;
+    };
     
     const promise = api.submitSkill(selectedSkill, uploadedFile, candidateData);
     
@@ -155,48 +155,52 @@ export function HubPage() {
               </button>
             </div>
 
-            {/* Proxy Fields */}
-            {isProxy && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="mb-7 space-y-4"
-              >
-                <div>
-                  <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>Candidate Name</label>
-                  <input
-                    type="text"
-                    value={candidateName}
-                    onChange={(e) => setCandidateName(e.target.value)}
-                    className={inputClass}
-                    placeholder="e.g. Radhika Sharma"
-                    style={{ fontSize: '15px' }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>Candidate Phone</label>
-                  <input
-                    type="tel"
-                    value={candidatePhone}
-                    onChange={(e) => setCandidatePhone(e.target.value)}
-                    className={inputClass}
-                    placeholder="+91 98765 43210"
-                    style={{ fontSize: '15px' }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>Candidate Location (City)</label>
-                  <input
-                    type="text"
-                    value={candidateLocation}
-                    onChange={(e) => setCandidateLocation(e.target.value)}
-                    className={inputClass}
-                    placeholder="e.g. Bangalore"
-                    style={{ fontSize: '15px' }}
-                  />
-                </div>
-              </motion.div>
-            )}
+            {/* User/Candidate Fields */}
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mb-7 space-y-4"
+            >
+              <div>
+                <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
+                  {isProxy ? 'Candidate Name' : 'Your Name'}
+                </label>
+                <input
+                  type="text"
+                  value={candidateName}
+                  onChange={(e) => setCandidateName(e.target.value)}
+                  className={inputClass}
+                  placeholder={isProxy ? "e.g. Radhika Sharma" : "e.g. Your Name"}
+                  style={{ fontSize: '15px' }}
+                />
+              </div>
+              <div>
+                <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
+                  {isProxy ? 'Candidate Phone' : 'Your Phone'}
+                </label>
+                <input
+                  type="tel"
+                  value={candidatePhone}
+                  onChange={(e) => setCandidatePhone(e.target.value)}
+                  className={inputClass}
+                  placeholder="+91 98765 43210"
+                  style={{ fontSize: '15px' }}
+                />
+              </div>
+              <div>
+                <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
+                  {isProxy ? 'Candidate Location (City)' : 'Your Location (City)'}
+                </label>
+                <input
+                  type="text"
+                  value={candidateLocation}
+                  onChange={(e) => setCandidateLocation(e.target.value)}
+                  className={inputClass}
+                  placeholder="e.g. Bangalore"
+                  style={{ fontSize: '15px' }}
+                />
+              </div>
+            </motion.div>
 
             {/* Skill */}
             <div className="mb-7">

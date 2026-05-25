@@ -68,17 +68,17 @@ export function LoginPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-lg"
+        className="w-full max-w-[600px]"
       >
         {/* Language Switcher (on login page) */}
         <div className="flex justify-end mb-4">
           <div className="relative">
             <button
               onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/70 border border-zinc-200 text-zinc-600 hover:bg-white transition-colors backdrop-blur"
-              style={{ fontSize: '13px' }}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/70 border border-zinc-200 text-zinc-600 hover:bg-white transition-colors backdrop-blur"
+              style={{ fontSize: '16px' }}
             >
-              <Globe size={14} />
+              <Globe size={18} />
               <span>{langLabels[language]}</span>
             </button>
 
@@ -117,19 +117,19 @@ export function LoginPage() {
 
           <h1
             className="text-zinc-900 leading-[0.95] tracking-tight"
-            style={{ ...serif, fontSize: 'clamp(54px, 9vw, 84px)' }}
+            style={{ ...serif, fontSize: 'clamp(64px, 10vw, 96px)' }}
           >
             {t('welcome')}
             <br />
             <span className="italic">{t('back')}</span>
           </h1>
-          <p className="text-black mt-5" style={{ fontSize: '16px' }}>
+          <p className="text-black mt-6" style={{ fontSize: '18px' }}>
             {t('sign_in_continue')}
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white/85 backdrop-blur border border-zinc-200/70 rounded-[32px] p-9 shadow-[0_1px_2px_rgba(16,24,40,0.04)]">
+        <div className="bg-white/85 backdrop-blur border border-zinc-200/70 rounded-[36px] p-12 md:p-14 shadow-[0_1px_2px_rgba(16,24,40,0.04)]">
           <LoginToggle selected={userType} onToggle={setUserType} />
 
           <AnimatePresence mode="wait">
@@ -143,8 +143,8 @@ export function LoginPage() {
               >
                 {!showOTP ? (
                   <>
-                    <div className="mb-5">
-                      <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
+                    <div className="mb-6">
+                      <label className="block text-zinc-500 mb-2.5" style={{ fontSize: '15px' }}>
                         {t('phone_number')}
                       </label>
                       <input
@@ -153,15 +153,15 @@ export function LoginPage() {
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         className={inputClass}
                         placeholder="+91 98765 43210"
-                        style={{ fontSize: '15px' }}
+                        style={{ fontSize: '18px' }}
                       />
                     </div>
 
-                    <button
-                      onClick={handleSendOTP}
-                      className="w-full bg-[#2F6BFF] text-white py-3.5 rounded-full hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
-                      style={{ fontSize: '15px' }}
-                    >
+                      <button
+                        onClick={handleSendOTP}
+                        className="w-full bg-[#2F6BFF] text-white py-4.5 rounded-full hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
+                        style={{ fontSize: '18px', padding: '1.25rem' }}
+                      >
                       {t('send_otp')}
                     </button>
                   </>
@@ -187,8 +187,8 @@ export function LoginPage() {
 
                     <button
                       onClick={handleArtisanLogin}
-                      className="w-full bg-[#2F6BFF] text-white py-3.5 rounded-full hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
-                      style={{ fontSize: '15px' }}
+                      className="w-full bg-[#2F6BFF] text-white py-4.5 rounded-full hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
+                      style={{ fontSize: '18px', padding: '1.25rem' }}
                     >
                       {t('verify_continue')}
                     </button>
@@ -211,8 +211,8 @@ export function LoginPage() {
                 exit={{ opacity: 0, x: -12 }}
                 transition={{ duration: 0.25 }}
               >
-                <div className="mb-4">
-                  <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
+                <div className="mb-5">
+                  <label className="block text-zinc-500 mb-2.5" style={{ fontSize: '15px' }}>
                     Email
                   </label>
                   <input
@@ -221,12 +221,12 @@ export function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     className={inputClass}
                     placeholder="validator@nss.org"
-                    style={{ fontSize: '15px' }}
+                    style={{ fontSize: '18px' }}
                   />
                 </div>
 
-                <div className="mb-5">
-                  <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
+                <div className="mb-6">
+                  <label className="block text-zinc-500 mb-2.5" style={{ fontSize: '15px' }}>
                     Password
                   </label>
                   <input
@@ -235,14 +235,14 @@ export function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     className={inputClass}
                     placeholder="••••••••"
-                    style={{ fontSize: '15px' }}
+                    style={{ fontSize: '18px' }}
                   />
                 </div>
 
                 <button
                   onClick={handleValidatorLogin}
-                  className="w-full bg-[#2F6BFF] text-white py-3.5 rounded-full hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
-                  style={{ fontSize: '15px' }}
+                  className="w-full bg-[#2F6BFF] text-white py-4.5 rounded-full hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
+                  style={{ fontSize: '18px', padding: '1.25rem' }}
                 >
                   Login to dashboard
                 </button>
@@ -250,11 +250,6 @@ export function LoginPage() {
             )}
           </AnimatePresence>
 
-          <div className="mt-7 pt-5 border-t border-zinc-100">
-            <p className="text-center text-zinc-500" style={{ fontSize: '12px' }}>
-              {t('blockchain_verified')}
-            </p>
-          </div>
         </div>
       </motion.div>
     </div>

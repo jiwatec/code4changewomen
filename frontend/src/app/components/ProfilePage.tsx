@@ -10,6 +10,7 @@ interface Job {
   titleKey: string;
   companyKey: string;
   locationKey: string;
+  description?: string;
   employerPhone?: string;
 }
 
@@ -23,6 +24,8 @@ export function ProfilePage() {
   const [profile, setProfile] = useState<any>(null);
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [isLoadingJobs, setIsLoadingJobs] = useState(false);
+  const [expandedJobId, setExpandedJobId] = useState<number | null>(null);
   const { t } = useLanguage();
   const navigate = useNavigate();
 
@@ -49,6 +52,7 @@ export function ProfilePage() {
     status: 'approved',
     aiScore: 95,
     createdAt: '2026-05-24T00:00:00Z',
+    candidateLocation: 'Mangalore', // Added for demo filtering
     certificate: {
       certCode: 'CERT-A1B2C3D4',
       hash: '7f3a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e9e2b'
@@ -57,9 +61,14 @@ export function ProfilePage() {
 
   useEffect(() => {
     if (approvedSubmission?.trade) {
+      setIsLoadingJobs(true);
       api.getJobs(approvedSubmission.candidateLocation)
         .then(data => setJobs(data))
-        .catch(err => console.error('Failed to fetch jobs', err));
+        .catch(err => {
+          console.error('Failed to fetch jobs', err);
+          toast.error('Could not load jobs at this time.');
+        })
+        .finally(() => setIsLoadingJobs(false));
     }
   }, [approvedSubmission?.trade, approvedSubmission?.candidateLocation]);
 
@@ -216,34 +225,87 @@ export function ProfilePage() {
                     {t('unlocked_local_jobs')}
                   </h3>
 
-                  <div className="space-y-2">
-                    {jobs.map((job) => (
-                      <motion.div
-                        key={job.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: job.id * 0.08 }}
-                        className="bg-zinc-50/70 border border-zinc-200/60 rounded-2xl p-4 flex items-center justify-between hover:bg-white hover:border-zinc-300 transition-colors"
-                      >
-                        <div>
-                          <div className="text-zinc-900" style={{ fontSize: '15px' }}>
-                            {/* We use t() as fallback but mostly it returns the literal API strings now */}
-                            {t(job.titleKey) === job.titleKey ? job.titleKey : t(job.titleKey)}
-                          </div>
-                          <div className="text-zinc-500 mt-0.5" style={{ fontSize: '13px' }}>
-                            {t(job.companyKey) === job.companyKey ? job.companyKey : t(job.companyKey)} · {t(job.locationKey) === job.locationKey ? job.locationKey : t(job.locationKey)}
-                          </div>
-                        </div>
-                        <a
-                          href={job.employerPhone ? `tel:${job.employerPhone}` : '#'}
-                          className="px-5 py-2 rounded-full bg-[#2F6BFF] text-white hover:bg-[#1F58E8] transition-colors shadow-[0_1px_2px_rgba(47,107,255,0.3)] inline-block"
-                          style={{ fontSize: '13px' }}
-                        >
-                          Call to Apply
-                        </a>
-                      </motion.div>
-                    ))}
-                  </div>
+                  {isLoadingJobs ? (
+                    <div className="text-center py-6">
+                      <div className="inline-block w-6 h-6 border-2 border-zinc-200 border-t-[#2F6BFF] rounded-full animate-spin mb-2"></div>
+                      <p className="text-zinc-500" style={{ fontSize: '14px' }}>Loading jobs in your area...</p>
+                    </div>
+                  ) : jobs.length === 0 ? (
+                    <div className="text-center py-6 bg-zinc-50 rounded-2xl border border-zinc-200/60">
+                      <p className="text-zinc-500" style={{ fontSize: '14px' }}>
+                        No jobs available in your area right now. Check back later!
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {jobs.map((job) => {
+                        const isExpanded = expandedJobId === job.id;
+                        return (
+                          <motion.div
+                            key={job.id}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: job.id * 0.05 }}
+                            className="bg-zinc-50/70 border border-zinc-200/60 rounded-2xl overflow-hidden hover:bg-white hover:border-zinc-300 transition-colors"
+                          >
+                            <div className="p-4 flex items-start justify-between">
+                              <div>
+                                <div className="text-zinc-900 font-medium" style={{ fontSize: '15px' }}>
+                                  {t(job.titleKey) === job.titleKey ? job.titleKey : t(job.titleKey)}
+                                </div>
+                                <div className="text-zinc-500 mt-0.5" style={{ fontSize: '13px' }}>
+                                  {t(job.companyKey) === job.companyKey ? job.companyKey : t(job.companyKey)} · {t(job.locationKey) === job.locationKey ? job.locationKey : t(job.locationKey)}
+                                </div>
+                              </div>
+                              
+                              {!isExpanded && (
+                                <button
+                                  onClick={() => setExpandedJobId(job.id)}
+                                  className="px-5 py-2 rounded-full bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-50 transition-colors shadow-sm"
+                                  style={{ fontSize: '13px' }}
+                                >
+                                  Apply
+                                </button>
+                              )}
+                            </div>
+                            
+                            <AnimatePresence>
+                              {isExpanded && (
+                                <motion.div
+                                  initial={{ height: 0, opacity: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
+                                  transition={{ duration: 0.2 }}
+                                  className="px-4 pb-4 border-t border-zinc-100 mt-2 pt-4 bg-white/50"
+                                >
+                                  <p className="text-zinc-600 mb-4" style={{ fontSize: '14px', lineHeight: '1.5' }}>
+                                    {job.description || "Looking for a skilled verified tailor to join our local team. Must have experience with measurements, cutting, and stitching high-quality garments."}
+                                  </p>
+                                  
+                                  <div className="flex justify-end gap-2">
+                                    <button
+                                      onClick={() => setExpandedJobId(null)}
+                                      className="px-4 py-2 rounded-full text-zinc-500 hover:bg-zinc-100 transition-colors"
+                                      style={{ fontSize: '13px' }}
+                                    >
+                                      Close
+                                    </button>
+                                    <a
+                                      href={job.employerPhone ? `tel:${job.employerPhone}` : '#'}
+                                      className="px-6 py-2 rounded-full bg-[#2F6BFF] text-white hover:bg-[#1F58E8] transition-colors shadow-[0_1px_2px_rgba(47,107,255,0.3)] inline-block"
+                                      style={{ fontSize: '13px' }}
+                                    >
+                                      Call Employer
+                                    </a>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
