@@ -39,15 +39,28 @@ def get_current_validator(current_user: dict = Depends(get_current_user_from_tok
     if current_user.get("role") == "admin":
         return {"id": "admin", "role": "admin", "name": "Admin"}
 
-    validator = db.query(Validator).filter(Validator.id == current_user.get("id")).first()
+    try:
+        val_uuid = uuid.UUID(current_user.get("id"))
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
+
+    validator = db.query(Validator).filter(Validator.id == val_uuid).first()
     if not validator:
         raise HTTPException(status_code=404, detail="Validator not found")
     return validator
 
+import uuid
+
 def get_current_user(current_user: dict = Depends(get_current_user_from_token), db: Session = Depends(get_db)):
     if current_user.get("role") != "user":
         raise HTTPException(status_code=403, detail="Not enough permissions")
-    user = db.query(User).filter(User.id == current_user.get("id")).first()
+    
+    try:
+        user_uuid = uuid.UUID(current_user.get("id"))
+    except ValueError:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
+
+    user = db.query(User).filter(User.id == user_uuid).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
