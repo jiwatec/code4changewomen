@@ -47,6 +47,13 @@ export const api = {
       body: JSON.stringify({ username, password }),
     }),
 
+  // Volunteer Auth
+  registerVolunteer: (formData: FormData) =>
+    request('/volunteers/register', {
+      method: 'POST',
+      body: formData,
+    }),
+
   // Artisan Actions
   getProfile: () => request('/users/profile'),
   

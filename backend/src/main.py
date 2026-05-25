@@ -3,13 +3,8 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.database import engine
-from src import models
+from src.routers import admin, user, public, volunteer
 
-from src.routers import admin, user, public
-
-# Create all tables (in production, use Alembic migrations instead)
-models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="NSS Backend API")
 
@@ -39,6 +34,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 app.include_router(admin.router)
 app.include_router(user.router)
 app.include_router(public.router)
+app.include_router(volunteer.router)
 
 @app.get("/")
 def read_root():

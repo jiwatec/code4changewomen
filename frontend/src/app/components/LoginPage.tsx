@@ -251,6 +251,14 @@ export function LoginPage() {
                 >
                   Login to dashboard
                 </button>
+                
+                <button
+                  onClick={() => navigate('/volunteer/register')}
+                  className="w-full mt-3 text-zinc-500 py-2 rounded-full hover:text-zinc-800 transition-colors"
+                  style={{ fontSize: '13px' }}
+                >
+                  Register as a new Volunteer
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
