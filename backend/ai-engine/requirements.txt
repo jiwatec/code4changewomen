@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+transformers
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+python-multipart
+librosa
+sqlalchemy
+asyncpg
+psycopg[binary]
+python-dotenv

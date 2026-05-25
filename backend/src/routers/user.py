@@ -60,9 +60,28 @@ def submit_skill(
     # KISS: Just save filename as URL for now
     media_url = f"/uploads/{file.filename}"
     
-    # Mock AI Grading & Whisper-Tiny Transcription
+    import requests
+
+    # Mock AI Grading & Whisper-Tiny Transcription Fallback
     transcript = "[Whisper-Tiny Transcript | HI -> EN]\nI am demonstrating my tailoring skills by stitching this blouse. I have been doing this for 5 years."
     ai_score = 92.0 # Pre-scored by AI based on transcript relevance
+    
+    try:
+        file.file.seek(0)
+        ai_response = requests.post(
+            "http://localhost:8001/grade_assessment",
+            files={"file": (file.filename, file.file, file.content_type)},
+            data={"language": "hi"},
+            timeout=30
+        )
+        if ai_response.status_code == 200:
+            ai_data = ai_response.json()
+            transcript_text = ai_data.get("translated_transcription", ai_data.get("transcription", ""))
+            if transcript_text:
+                transcript = f"[Whisper-Tiny | AI Engine]\n{transcript_text}"
+            ai_score = float(ai_data.get("confidence_score", 92.0))
+    except Exception as e:
+        print(f"Failed to connect to AI Engine: {e}. Using mockup.")
     
     new_submission = Submission(
         userId=current_user.id,
