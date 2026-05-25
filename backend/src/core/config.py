@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     ADMIN_USERNAME: str = os.getenv("ADMIN_USERNAME", "admin")
     ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "123456")
 
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
+    SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
+
     class Config:
         env_file = ".env"
 

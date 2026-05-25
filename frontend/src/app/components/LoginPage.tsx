@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage, Language } from '../contexts/LanguageContext';
 
 import { api } from '../services/api';
-
+import { toast } from 'sonner';
 const serif = { fontFamily: '"Instrument Serif", serif' };
 const sans = { fontFamily: '"Inter", system-ui, sans-serif' };
 
@@ -250,14 +250,6 @@ export function LoginPage() {
                   style={{ fontSize: '15px' }}
                 >
                   Login to dashboard
-                </button>
-                
-                <button
-                  onClick={() => navigate('/volunteer/register')}
-                  className="w-full mt-3 text-zinc-500 py-2 rounded-full hover:text-zinc-800 transition-colors"
-                  style={{ fontSize: '13px' }}
-                >
-                  Register as a new Volunteer
                 </button>
               </motion.div>
             )}

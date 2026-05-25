@@ -6,7 +6,6 @@ import { toast, Toaster } from 'sonner';
 import { useLanguage } from '../contexts/LanguageContext';
 
 import { api } from '../services/api';
-
 const skillKeys = [
   'tailoring',
   'handicrafts',

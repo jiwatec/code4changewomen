@@ -3,7 +3,6 @@ import { Play, CheckCircle, Clock, XCircle, BarChart3, ArrowLeft } from 'lucide-
 import { motion, AnimatePresence } from 'motion/react';
 import { toast, Toaster } from 'sonner';
 import { api } from '../services/api';
-
 interface Submission {
   id: string;
   phoneNumber?: string;

@@ -14,3 +14,4 @@ cloudinary==1.34.0
 twilio==8.8.0
 qrcode==7.4.2
 Pillow>=10.4.0
+supabase>=2.4.0

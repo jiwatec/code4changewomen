@@ -9,7 +9,7 @@ from src.schemas import OTPRequest, OTPVerify, Token, UserResponse, SubmissionRe
 from src.models import User, Submission
 from src.services.otp_service import generate_otp, get_otp_expiry, send_otp_sms
 from src.core.security import create_access_token
-
+from src.services.storage_service import upload_file_to_cloud
 router = APIRouter(prefix="/api/users", tags=["users"])
 
 @router.post("/request-otp")
@@ -57,8 +57,8 @@ def submit_skill(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # KISS: Just save filename as URL for now
-    media_url = f"/uploads/{file.filename}"
+    # Upload to Supabase Storage
+    media_url = upload_file_to_cloud(file)
     
     import requests
 
