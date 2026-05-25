@@ -78,6 +78,12 @@ def approve_submission(
         professionalismScore=professionalismScore
     )
     db.add(certificate)
+    
+    # Update user's trade status to certified
+    user = db.query(User).filter(User.id == submission.userId).first()
+    if user:
+        user.trade = f"certified_{submission.trade}"
+    
     db.commit()
     
     return {"message": "Submission approved and certificate issued", "certificate_id": str(certificate.id)}

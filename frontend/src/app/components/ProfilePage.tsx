@@ -10,6 +10,7 @@ interface Job {
   titleKey: string;
   companyKey: string;
   locationKey: string;
+  employerPhone?: string;
 }
 
 
@@ -56,11 +57,11 @@ export function ProfilePage() {
 
   useEffect(() => {
     if (approvedSubmission?.trade) {
-      api.getJobs(approvedSubmission.trade)
+      api.getJobs(approvedSubmission.candidateLocation)
         .then(data => setJobs(data))
         .catch(err => console.error('Failed to fetch jobs', err));
     }
-  }, [approvedSubmission?.trade]);
+  }, [approvedSubmission?.trade, approvedSubmission?.candidateLocation]);
 
   return (
     <div
@@ -89,11 +90,16 @@ export function ProfilePage() {
               className="text-zinc-900 leading-[0.95] tracking-tight"
               style={{ ...serif, fontSize: 'clamp(40px, 6vw, 64px)' }}
             >
-              {profile?.name || t('my_profile')}
+              {approvedSubmission?.candidateName || profile?.name || t('my_profile')}
             </h1>
             <p className="text-zinc-500 mt-3" style={{ fontSize: '15px' }}>
-              {profile?.phone}
+              {approvedSubmission?.candidatePhone || profile?.phone}
             </p>
+            {approvedSubmission?.candidateName && (
+              <div className="mt-3 inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium border border-blue-100">
+                Proxy Submission by {profile?.name || profile?.phone}
+              </div>
+            )}
           </div>
 
           {/* Certificate Card */}
@@ -228,12 +234,13 @@ export function ProfilePage() {
                             {t(job.companyKey) === job.companyKey ? job.companyKey : t(job.companyKey)} · {t(job.locationKey) === job.locationKey ? job.locationKey : t(job.locationKey)}
                           </div>
                         </div>
-                        <button
-                          className="px-5 py-2 rounded-full bg-[#2F6BFF] text-white hover:bg-[#1F58E8] transition-colors shadow-[0_1px_2px_rgba(47,107,255,0.3)]"
+                        <a
+                          href={job.employerPhone ? `tel:${job.employerPhone}` : '#'}
+                          className="px-5 py-2 rounded-full bg-[#2F6BFF] text-white hover:bg-[#1F58E8] transition-colors shadow-[0_1px_2px_rgba(47,107,255,0.3)] inline-block"
                           style={{ fontSize: '13px' }}
                         >
-                          {t('apply')}
-                        </button>
+                          Call to Apply
+                        </a>
                       </motion.div>
                     ))}
                   </div>

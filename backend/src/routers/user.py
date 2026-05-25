@@ -9,7 +9,7 @@ from typing import List
 
 from src.dependencies import get_current_user, get_db
 from src.schemas import OTPRequest, OTPVerify, Token, UserResponse, SubmissionResponse
-from src.models import User, Submission
+from src.models import User, Submission, Job
 from src.services.otp_service import generate_otp, get_otp_expiry, send_otp_sms
 from src.core.config import settings
 from src.core.security import create_access_token
@@ -62,6 +62,9 @@ async def submit_skill(
     background_tasks: BackgroundTasks,
     trade: str = Form(...),
     file: UploadFile = File(...),
+    candidateName: str = Form(None),
+    candidatePhone: str = Form(None),
+    candidateLocation: str = Form(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -75,7 +78,10 @@ async def submit_skill(
         mediaUrl=media_url,
         transcript="Analyzing video...",
         aiScore=0.0,
-        status="pending"
+        status="pending",
+        candidateName=candidateName,
+        candidatePhone=candidatePhone,
+        candidateLocation=candidateLocation
     )
     db.add(new_submission)
     db.commit()
@@ -87,39 +93,56 @@ async def submit_skill(
     return new_submission
 
 @router.get("/jobs")
-def get_jobs(skill: str, current_user: User = Depends(get_current_user)):
-    """Fetch jobs from Adzuna API or return mock fallback if keys are missing."""
-    if settings.ADZUNA_APP_ID and settings.ADZUNA_APP_KEY:
-        try:
-            query = urllib.parse.quote(skill)
-            url = f"https://api.adzuna.com/v1/api/jobs/in/search/1?app_id={settings.ADZUNA_APP_ID}&app_key={settings.ADZUNA_APP_KEY}&what={query}&results_per_page=3"
-            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-            with urllib.request.urlopen(req) as response:
-                data = json.loads(response.read().decode())
-                
-                jobs = []
-                for idx, job in enumerate(data.get('results', [])):
-                    jobs.append({
-                        "id": idx + 1,
-                        "titleKey": job.get("title", "Job"),
-                        "companyKey": job.get("company", {}).get("display_name", "Company"),
-                        "locationKey": job.get("location", {}).get("display_name", "Location")
-                    })
-                return jobs
-        except Exception as e:
-            print(f"Error fetching from Adzuna: {e}")
-            # Fallback to mock on error
-
-    # Mock Fallback Data
+def get_jobs(location: str = None, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Fetch local jobs, filtered by candidate location."""
+    query = db.query(Job)
+    if location:
+        # Case insensitive simple match
+        query = query.filter(Job.location.ilike(f"%{location}%"))
+        
+    jobs = query.all()
+    
+    if not jobs:
+        # Return fallback local jobs if DB is empty for demo purposes
+        return [
+            {
+                "id": 1,
+                "titleKey": "Senior Stitching Specialist",
+                "companyKey": "Local Boutique (Ramesh)",
+                "locationKey": location or "Local City",
+                "employerPhone": "+91 9000012345"
+            },
+            {
+                "id": 2,
+                "titleKey": "Garment Alteration Assistant",
+                "companyKey": "City Mall Tailors",
+                "locationKey": location or "Local City",
+                "employerPhone": "+91 9000012346"
+            },
+            {
+                "id": 3,
+                "titleKey": "Bulk Production Tailor",
+                "companyKey": "Export Co-op",
+                "locationKey": location or "Local City",
+                "employerPhone": "+91 9000012347"
+            }
+        ]
+        
     return [
-        { "id": 1, "titleKey": f"Senior {skill.capitalize()} Specialist", "companyKey": "Local Co-op", "locationKey": "Downtown" },
-        { "id": 2, "titleKey": f"{skill.capitalize()} Instructor", "companyKey": "Skill Center", "locationKey": "Community Hub" },
-        { "id": 3, "titleKey": "Master Craftsperson", "companyKey": "Artisan Guild", "locationKey": "Market District" }
+        {
+            "id": job.id,
+            "titleKey": job.title,
+            "companyKey": job.employerName,
+            "locationKey": job.location,
+            "employerPhone": job.employerPhone
+        }
+        for job in jobs
     ]
 
 async def process_ai_grading(submission_id: str, filename: str, content_type: str, media_url: str):
     """
-    Background task to call AI Engine and update submission.
+    Background task to call AI Engine for transcription + tailoring validation.
+    Updates submission status to 'pending_admin' (if tailoring-related) or 'rejected'.
     """
     import requests
     from src.database import SessionLocal
@@ -127,39 +150,63 @@ async def process_ai_grading(submission_id: str, filename: str, content_type: st
 
     db = SessionLocal()
     try:
-        # We need the actual file content again or download from media_url
-        # For simplicity in this demo, we assume the AI engine can access the URL or we mock it
-        # In a real app, you'd pass the file bytes or have the AI engine download from Supabase
-        
-        # Mocking the AI call with a timeout to prevent hanging the worker
-        ai_response = requests.post(
-            "http://localhost:8001/grade_assessment",
-            data={"trade": "tailoring", "media_url": media_url},
-            timeout=15 
-        )
-        
-        if ai_response.status_code == 200:
-            ai_data = ai_response.json()
-            transcript = ai_data.get("translated_transcription", ai_data.get("transcription", "No transcript available"))
-            ai_score = float(ai_data.get("confidence_score", 0.0))
-        else:
-            # Fallback for demo/offline
-            transcript = "Sample transcript: Artisan demonstrated proficiency in requested trade. Speech is clear and technical terms were used correctly."
-            ai_score = 0.85
-            
         submission = db.query(Submission).filter(Submission.id == submission_id).first()
-        if submission:
-            submission.transcript = transcript
-            submission.aiScore = ai_score
-            db.commit()
+        if not submission:
+            print(f"Submission {submission_id} not found")
+            return
+
+        # Try to download the video and send to AI engine
+        try:
+            # Download video from Supabase storage URL
+            video_response = requests.get(media_url, timeout=30)
+            if video_response.status_code != 200:
+                raise Exception(f"Failed to download video: {video_response.status_code}")
+
+            # Send to AI engine
+            files = {"file": (filename, video_response.content, content_type or "video/mp4")}
+            data = {"user_id": str(submission.userId)}
+
+            ai_response = requests.post(
+                "http://localhost:8001/grade_assessment",
+                files=files,
+                data=data,
+                timeout=120,  # Whisper can take time
+            )
+
+            if ai_response.status_code == 200:
+                ai_data = ai_response.json()
+                transcript = ai_data.get("transcription", "")
+                translated = ai_data.get("translated_transcription", "")
+                ai_score = float(ai_data.get("confidence_score", 0.0))
+                is_related = ai_data.get("is_tailoring_related", False)
+
+                submission.transcript = translated if translated else transcript
+                submission.aiScore = ai_score
+
+                if is_related:
+                    submission.status = "pending"  # Ready for admin review
+                else:
+                    submission.status = "rejected"  # AI rejected — not tailoring
+
+                db.commit()
+                print(f"AI grading complete for {submission_id}: score={ai_score}, related={is_related}")
+                return
+            else:
+                print(f"AI Engine returned {ai_response.status_code}: {ai_response.text}")
+
+        except requests.exceptions.ConnectionError:
+            print(f"AI Engine not running. Using mock grading for {submission_id}")
+        except Exception as e:
+            print(f"AI grading error for {submission_id}: {e}")
+
+        # Fallback mock grading (AI engine offline)
+        submission.transcript = "AI Engine offline — mock transcript: Artisan demonstrated tailoring skills."
+        submission.aiScore = 75.0
+        submission.status = "pending"  # Default to pending for admin review
+        db.commit()
+
     except Exception as e:
-        print(f"AI Grading failed for {submission_id}: {e}")
-        # Fallback for demo/offline
-        submission = db.query(Submission).filter(Submission.id == submission_id).first()
-        if submission:
-            submission.transcript = "Mock Transcript: Proficient demonstration of skills."
-            submission.aiScore = 0.78
-            db.commit()
+        print(f"Fatal error in AI grading for {submission_id}: {e}")
     finally:
         db.close()
 

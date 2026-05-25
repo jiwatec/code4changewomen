@@ -6,6 +6,5 @@ torch
 python-multipart
 librosa
 sqlalchemy
-asyncpg
 psycopg[binary]
 python-dotenv

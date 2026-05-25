@@ -30,11 +30,27 @@ class Submission(Base):
     mediaUrl = Column(String, nullable=False)
     transcript = Column(String, nullable=True)
     aiScore = Column(Float, default=0.0)
-    status = Column(String, default="pending") # pending, approved, rejected
+    status = Column(String, default="pending") # pending → pending_admin (AI passed) → approved/rejected (admin)
+    
+    # Proxy submission fields
+    candidateName = Column(String, nullable=True)
+    candidatePhone = Column(String, nullable=True)
+    candidateLocation = Column(String, nullable=True)
+    
     createdAt = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="submissions")
     certificate = relationship("Certificate", back_populates="submission", uselist=False)
+
+class Job(Base):
+    __tablename__ = "jobs"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String, nullable=False)
+    employerName = Column(String, nullable=False)
+    employerPhone = Column(String, nullable=False)
+    location = Column(String, nullable=False)
+    createdAt = Column(DateTime, default=datetime.utcnow)
 
 class Certificate(Base):
     __tablename__ = "certificates"

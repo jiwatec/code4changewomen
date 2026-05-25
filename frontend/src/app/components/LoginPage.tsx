@@ -68,7 +68,7 @@ export function LoginPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className="w-full max-w-lg"
       >
         {/* Language Switcher (on login page) */}
         <div className="flex justify-end mb-4">
@@ -113,23 +113,23 @@ export function LoginPage() {
         </div>
 
         {/* Hero */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-10">
 
           <h1
             className="text-zinc-900 leading-[0.95] tracking-tight"
-            style={{ ...serif, fontSize: 'clamp(48px, 8vw, 72px)' }}
+            style={{ ...serif, fontSize: 'clamp(54px, 9vw, 84px)' }}
           >
             {t('welcome')}
             <br />
             <span className="italic">{t('back')}</span>
           </h1>
-          <p className="text-zinc-500 mt-4" style={{ fontSize: '15px' }}>
+          <p className="text-black mt-5" style={{ fontSize: '16px' }}>
             {t('sign_in_continue')}
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white/85 backdrop-blur border border-zinc-200/70 rounded-[32px] p-7 shadow-[0_1px_2px_rgba(16,24,40,0.04)]">
+        <div className="bg-white/85 backdrop-blur border border-zinc-200/70 rounded-[32px] p-9 shadow-[0_1px_2px_rgba(16,24,40,0.04)]">
           <LoginToggle selected={userType} onToggle={setUserType} />
 
           <AnimatePresence mode="wait">

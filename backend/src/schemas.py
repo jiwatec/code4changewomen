@@ -59,6 +59,9 @@ class SubmissionResponse(SubmissionBase):
     userId: UUID
     createdAt: datetime
     phone: Optional[str] = None
+    candidateName: Optional[str] = None
+    candidatePhone: Optional[str] = None
+    candidateLocation: Optional[str] = None
     certificate: Optional['CertificateResponse'] = None
 
     class Config:

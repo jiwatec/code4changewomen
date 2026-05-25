@@ -65,10 +65,15 @@ export const api = {
   // Artisan Actions
   getProfile: () => request('/users/profile'),
   
-  submitSkill: (trade: string, file: File) => {
+  submitSkill: (trade: string, file: File, candidateData?: any) => {
     const formData = new FormData();
     formData.append('trade', trade);
     formData.append('file', file);
+    if (candidateData) {
+      if (candidateData.name) formData.append('candidateName', candidateData.name);
+      if (candidateData.phone) formData.append('candidatePhone', candidateData.phone);
+      if (candidateData.location) formData.append('candidateLocation', candidateData.location);
+    }
     return request('/users/submit', {
       method: 'POST',
       body: formData,
@@ -77,8 +82,8 @@ export const api = {
 
   getSubmissions: () => request('/users/submissions'),
 
-  getJobs: (skill: string) =>
-    request(`/users/jobs?skill=${encodeURIComponent(skill)}`),
+  getJobs: (location?: string) =>
+    request(location ? `/users/jobs?location=${encodeURIComponent(location)}` : `/users/jobs`),
 
   // Volunteer Actions
   getVolunteerDashboard: () => request('/volunteers/dashboard'),

@@ -22,6 +22,10 @@ export function HubPage() {
   const [selectedSkill, setSelectedSkill] = useState('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isProxy, setIsProxy] = useState(false);
+  const [candidateName, setCandidateName] = useState('');
+  const [candidatePhone, setCandidatePhone] = useState('+91 ');
+  const [candidateLocation, setCandidateLocation] = useState('');
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -50,7 +54,18 @@ export function HubPage() {
       return;
     }
     
-    const promise = api.submitSkill(selectedSkill, uploadedFile);
+    if (isProxy && (!candidateName || !candidatePhone || !candidateLocation)) {
+      toast.error('Please fill in all candidate details');
+      return;
+    }
+    
+    const candidateData = isProxy ? {
+      name: candidateName,
+      phone: candidatePhone,
+      location: candidateLocation
+    } : undefined;
+    
+    const promise = api.submitSkill(selectedSkill, uploadedFile, candidateData);
     
     toast.promise(promise, {
       loading: 'Uploading video and generating AI transcript...',
@@ -65,6 +80,9 @@ export function HubPage() {
       console.error(err);
     }
   };
+
+  const inputClass =
+    'w-full bg-zinc-50/80 border border-zinc-200 rounded-2xl px-4 py-3.5 text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/30 focus:border-[#2F6BFF] transition-all';
 
   return (
     <div
@@ -108,6 +126,78 @@ export function HubPage() {
 
           {/* Card */}
           <div className="bg-white/85 backdrop-blur rounded-[32px] border border-zinc-200/70 shadow-[0_1px_2px_rgba(16,24,40,0.04)] p-8">
+            
+            {/* Proxy Toggle */}
+            <div className="flex bg-zinc-100 rounded-xl p-1 mb-7 border border-zinc-200/50 relative">
+              <div
+                className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm border border-zinc-200/50 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                style={{
+                  left: isProxy ? 'calc(50% + 2px)' : '4px',
+                }}
+              />
+              <button
+                onClick={() => setIsProxy(false)}
+                className={`flex-1 py-2.5 text-center relative z-10 transition-colors ${
+                  !isProxy ? 'text-zinc-900 font-medium' : 'text-zinc-500 hover:text-zinc-700'
+                }`}
+                style={{ fontSize: '14px' }}
+              >
+                Applying for myself
+              </button>
+              <button
+                onClick={() => setIsProxy(true)}
+                className={`flex-1 py-2.5 text-center relative z-10 transition-colors ${
+                  isProxy ? 'text-zinc-900 font-medium' : 'text-zinc-500 hover:text-zinc-700'
+                }`}
+                style={{ fontSize: '14px' }}
+              >
+                Applying for someone else
+              </button>
+            </div>
+
+            {/* Proxy Fields */}
+            {isProxy && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="mb-7 space-y-4"
+              >
+                <div>
+                  <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>Candidate Name</label>
+                  <input
+                    type="text"
+                    value={candidateName}
+                    onChange={(e) => setCandidateName(e.target.value)}
+                    className={inputClass}
+                    placeholder="e.g. Radhika Sharma"
+                    style={{ fontSize: '15px' }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>Candidate Phone</label>
+                  <input
+                    type="tel"
+                    value={candidatePhone}
+                    onChange={(e) => setCandidatePhone(e.target.value)}
+                    className={inputClass}
+                    placeholder="+91 98765 43210"
+                    style={{ fontSize: '15px' }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>Candidate Location (City)</label>
+                  <input
+                    type="text"
+                    value={candidateLocation}
+                    onChange={(e) => setCandidateLocation(e.target.value)}
+                    className={inputClass}
+                    placeholder="e.g. Bangalore"
+                    style={{ fontSize: '15px' }}
+                  />
+                </div>
+              </motion.div>
+            )}
+
             {/* Skill */}
             <div className="mb-7">
               <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
