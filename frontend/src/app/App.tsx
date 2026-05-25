@@ -6,7 +6,6 @@ import { LoginPage } from './components/LoginPage';
 import { HubPage } from './components/HubPage';
 import { ProfilePage } from './components/ProfilePage';
 import { AdminPage } from './components/AdminPage';
-import { VolunteerRegisterPage } from './components/VolunteerRegisterPage';
 import { Toaster } from 'sonner';
 
 export default function App() {
@@ -29,7 +28,6 @@ export default function App() {
             <Route path="/hub" element={<HubPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/admin" element={<AdminPage />} />
-            <Route path="/volunteer/register" element={<VolunteerRegisterPage />} />
           </Routes>
         </div>
       </AuthProvider>

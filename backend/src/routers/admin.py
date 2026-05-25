@@ -52,7 +52,7 @@ def get_pending_submissions(
 
 @router.post("/submissions/{id}/approve")
 def approve_submission(
-    id: str, 
+    id: uuid.UUID, 
     skillScore: float,
     professionalismScore: float,
     db: Session = Depends(get_db), 
@@ -84,7 +84,7 @@ def approve_submission(
 
 @router.post("/submissions/{id}/reject")
 def reject_submission(
-    id: str, 
+    id: uuid.UUID, 
     db: Session = Depends(get_db), 
     current_validator: dict = Depends(get_current_validator)
 ):
