@@ -215,12 +215,12 @@ export function AdminPage() {
                         className="group flex items-center justify-between p-5 rounded-2xl bg-zinc-50/70 border border-zinc-200/60 hover:border-zinc-300 hover:bg-white transition-colors"
                       >
                         <div className="flex items-center gap-4">
-                          <div
-                            className="w-11 h-11 rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center text-zinc-700"
-                            style={{ ...serif, fontSize: '18px' }}
-                          >
-                            {submission.skill[0]}
-                          </div>
+                            <div
+                              className="w-11 h-11 rounded-full bg-gradient-to-br from-zinc-200 to-zinc-300 flex items-center justify-center text-zinc-700"
+                              style={{ ...serif, fontSize: '18px' }}
+                            >
+                              {(submission.skill || submission.trade || 'S')[0].toUpperCase()}
+                            </div>
                           <div>
                             <div className="text-zinc-900" style={{ fontSize: '15px' }}>
                               Submission {submission.id.slice(0, 8)}
@@ -270,7 +270,7 @@ export function AdminPage() {
                           >
                             <div>
                               <p className="text-zinc-900" style={{ fontSize: '14px' }}>
-                                {submission.id} · {submission.skill}
+                                {submission.id} · {submission.trade || submission.skill}
                               </p>
                               <p className="text-zinc-500 mt-0.5" style={{ fontSize: '12px' }}>
                                 Skill {submission.skillScore}/100 · Professionalism{' '}

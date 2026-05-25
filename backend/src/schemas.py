@@ -59,6 +59,7 @@ class SubmissionResponse(SubmissionBase):
     userId: UUID
     createdAt: datetime
     phone: Optional[str] = None
+    certificate: Optional['CertificateResponse'] = None
 
     class Config:
         from_attributes = True

@@ -125,12 +125,22 @@ export function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="ml-6">
-                  <div className="w-24 h-24 bg-white border border-zinc-200 rounded-2xl flex items-center justify-center shadow-sm">
+                <div className="ml-6 flex flex-col items-center">
+                  <div className="w-24 h-24 bg-white border border-zinc-200 rounded-2xl flex items-center justify-center shadow-sm mb-2">
                     <div className="text-zinc-500 text-center" style={{ fontSize: '11px' }}>
                       {t('qr_code')}
                     </div>
                   </div>
+                  {approvedSubmission.certificate && (
+                    <div className="text-center">
+                      <p className="text-zinc-900 font-medium" style={{ fontSize: '12px' }}>
+                        {approvedSubmission.certificate.certCode}
+                      </p>
+                      <p className="text-zinc-400 font-mono" style={{ fontSize: '10px' }} title={approvedSubmission.certificate.hash}>
+                        0x{approvedSubmission.certificate.hash.substring(0, 8)}...
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
