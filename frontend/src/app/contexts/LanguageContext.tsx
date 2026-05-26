@@ -290,6 +290,168 @@ const translations: Translations = {
     hi: 'सामुदायिक केंद्र',
     kn: 'ಸಮುದಾಯ ಕೇಂದ್ರ',
   },
+  // Hub Form
+  'applying_for_myself': {
+    en: 'Applying for myself',
+    hi: 'अपने लिए आवेदन कर रही हूँ',
+    kn: 'ನನಗಾಗಿ ಅರ್ಜಿ ಸಲ್ಲಿಸುತ್ತಿದ್ದೇನೆ',
+  },
+  'applying_for_someone_else': {
+    en: 'Applying for someone else',
+    hi: 'किसी और के लिए आवेदन कर रही हूँ',
+    kn: 'ಬೇರೆಯವರಿಗಾಗಿ ಅರ್ಜಿ ಸಲ್ಲಿಸುತ್ತಿದ್ದೇನೆ',
+  },
+  'your_name': {
+    en: 'Your Name',
+    hi: 'आपका नाम',
+    kn: 'ನಿಮ್ಮ ಹೆಸರು',
+  },
+  'candidate_name': {
+    en: 'Candidate Name',
+    hi: 'उम्मीदवार का नाम',
+    kn: 'ಅಭ್ಯರ್ಥಿಯ ಹೆಸರು',
+  },
+  'eg_your_name': {
+    en: 'e.g. Your Name',
+    hi: 'उदा. आपका नाम',
+    kn: 'ಉದಾ. ನಿಮ್ಮ ಹೆಸರು',
+  },
+  'eg_radhika': {
+    en: 'e.g. Radhika Sharma',
+    hi: 'उदा. राधिका शर्मा',
+    kn: 'ಉದಾ. ರಾಧಿಕಾ ಶರ್ಮಾ',
+  },
+  'your_phone': {
+    en: 'Your Phone',
+    hi: 'आपका फोन',
+    kn: 'ನಿಮ್ಮ ಫೋನ್',
+  },
+  'candidate_phone': {
+    en: 'Candidate Phone',
+    hi: 'उम्मीदवार का फोन',
+    kn: 'ಅಭ್ಯರ್ಥಿಯ ಫೋನ್',
+  },
+  'your_location': {
+    en: 'Your Location (City)',
+    hi: 'आपका स्थान (शहर)',
+    kn: 'ನಿಮ್ಮ ಸ್ಥಳ (ನಗರ)',
+  },
+  'candidate_location': {
+    en: 'Candidate Location (City)',
+    hi: 'उम्मीदवार का स्थान (शहर)',
+    kn: 'ಅಭ್ಯರ್ಥಿಯ ಸ್ಥಳ (ನಗರ)',
+  },
+  'eg_bangalore': {
+    en: 'e.g. Bangalore',
+    hi: 'उदा. बैंगलोर',
+    kn: 'ಉದಾ. ಬೆಂಗಳೂರು',
+  },
+  // Admin Page
+  'review_score_mint': {
+    en: 'Review. Score.',
+    hi: 'समीक्षा करें। स्कोर दें।',
+    kn: 'ಪರಿಶೀಲಿಸಿ. ಅಂಕ ನೀಡಿ.',
+  },
+  'mint_with_care': {
+    en: 'Mint with care.',
+    hi: 'सावधानी से मिंट करें।',
+    kn: 'ಎಚ್ಚರಿಕೆಯಿಂದ ಮುದ್ರಿಸಿ.',
+  },
+  'admin_hero_desc': {
+    en: 'Every certificate you mint unlocks real work for a rural artisan. Take a moment with each one.',
+    hi: 'आपके द्वारा मिंट किया गया प्रत्येक प्रमाणपत्र एक ग्रामीण कारीगर के लिए वास्तविक काम खोलता है। हर एक के साथ कुछ समय निकालें।',
+    kn: 'ನೀವು ಮುದ್ರಿಸುವ ಪ್ರತಿಯೊಂದು ಪ್ರಮಾಣಪತ್ರವು ಗ್ರಾಮೀಣ ಕುಶಲಕರ್ಮಿಗೆ ನೈಜ ಕೆಲಸವನ್ನು ತೆರೆಯುತ್ತದೆ. ಪ್ರತಿಯೊಂದರೊಂದಿಗೂ ಸ್ವಲ್ಪ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಿ.',
+  },
+  'approved': {
+    en: 'Approved',
+    hi: 'स्वीकृत',
+    kn: 'ಅನುಮೋದಿಸಲಾಗಿದೆ',
+  },
+  'pending': {
+    en: 'Pending',
+    hi: 'लंबित',
+    kn: 'ಬಾಕಿ ಉಳಿದಿದೆ',
+  },
+  'rejected': {
+    en: 'Rejected',
+    hi: 'अस्वीकृत',
+    kn: 'ತಿರಸ್ಕರಿಸಲಾಗಿದೆ',
+  },
+  'total_reviews': {
+    en: 'Total Reviews',
+    hi: 'कुल समीक्षाएं',
+    kn: 'ಒಟ್ಟು ವಿಮರ್ಶೆಗಳು',
+  },
+  'pending_review': {
+    en: 'Pending review',
+    hi: 'लंबित समीक्षा',
+    kn: 'ಪರಿಶೀಲನೆ ಬಾಕಿ ಇದೆ',
+  },
+  'submissions_waiting': {
+    en: 'Submissions waiting on a validator',
+    hi: 'एक वैलिडेटर की प्रतीक्षा में प्रस्तुतियाँ',
+    kn: 'ಮೌಲ್ಯಮಾಪಕರಿಗಾಗಿ ಕಾಯುತ್ತಿರುವ ಸಲ್ಲಿಕೆಗಳು',
+  },
+  'open': {
+    en: 'open',
+    hi: 'खुला',
+    kn: 'ತೆರೆದಿದೆ',
+  },
+  'review': {
+    en: 'Review',
+    hi: 'समीक्षा करें',
+    kn: 'ಪರಿಶೀಲಿಸಿ',
+  },
+  'all_caught_up': {
+    en: 'All caught up',
+    hi: 'सब पूरा हो गया',
+    kn: 'ಎಲ್ಲಾ ಪೂರ್ಣಗೊಂಡಿದೆ',
+  },
+  'no_pending_submissions': {
+    en: 'No pending submissions right now',
+    hi: 'अभी कोई लंबित प्रस्तुति नहीं है',
+    kn: 'ಈಗ ಯಾವುದೇ ಬಾಕಿ ಸಲ್ಲಿಕೆಗಳಿಲ್ಲ',
+  },
+  'recently_approved': {
+    en: 'Recently approved',
+    hi: 'हाल ही में स्वीकृत',
+    kn: 'ಇತ್ತೀಚೆಗೆ ಅನುಮೋದಿಸಲಾಗಿದೆ',
+  },
+  'back_to_dashboard': {
+    en: 'Back to dashboard',
+    hi: 'डैशबोर्ड पर वापस जाएं',
+    kn: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹಿಂತಿರುಗಿ',
+  },
+  'reviewing': {
+    en: 'Reviewing',
+    hi: 'समीक्षा हो रही है',
+    kn: 'ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ',
+  },
+  'technical_skill_desc': {
+    en: 'Technical skill demonstrated',
+    hi: 'प्रदर्शित तकनीकी कौशल',
+    kn: 'ಪ್ರದರ್ಶಿಸಲಾದ ತಾಂತ್ರಿಕ ಕೌಶಲ್ಯ',
+  },
+  'professionalism': {
+    en: 'Professionalism',
+    hi: 'व्यावसायिकता',
+    kn: 'ವೃತ್ತಿಪರತೆ',
+  },
+  'professionalism_desc': {
+    en: 'Presentation and clarity',
+    hi: 'प्रस्तुति और स्पष्टता',
+    kn: 'ಪ್ರಸ್ತುತಿ ಮತ್ತು ಸ್ಪಷ್ಟತೆ',
+  },
+  'decline': {
+    en: 'Decline',
+    hi: 'अस्वीकार करें',
+    kn: 'ತಿರಸ್ಕರಿಸಿ',
+  },
+  'accept_and_mint': {
+    en: 'Accept & mint certificate',
+    hi: 'स्वीकार करें और प्रमाणपत्र मिंट करें',
+    kn: 'ಸ್ವೀಕರಿಸಿ ಮತ್ತು ಪ್ರಮಾಣಪತ್ರ ಮುದ್ರಿಸಿ',
+  },
 };
 
 interface LanguageContextType {

@@ -102,12 +102,7 @@ export function HubPage() {
         >
           {/* Hero */}
           <div className="text-center mb-10">
-            <div
-              className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/70 border border-zinc-200 text-zinc-600 mb-6 backdrop-blur"
-              style={{ fontSize: '13px' }}
-            >
-              {t('step_1_proof')}
-            </div>
+
             <h1
               className="text-zinc-900 leading-[0.95] tracking-tight"
               style={{ ...serif, fontSize: 'clamp(48px, 7vw, 80px)' }}
@@ -142,7 +137,7 @@ export function HubPage() {
                 }`}
                 style={{ fontSize: '14px' }}
               >
-                Applying for myself
+                {t('applying_for_myself')}
               </button>
               <button
                 onClick={() => setIsProxy(true)}
@@ -151,7 +146,7 @@ export function HubPage() {
                 }`}
                 style={{ fontSize: '14px' }}
               >
-                Applying for someone else
+                {t('applying_for_someone_else')}
               </button>
             </div>
 
@@ -163,20 +158,20 @@ export function HubPage() {
             >
               <div>
                 <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
-                  {isProxy ? 'Candidate Name' : 'Your Name'}
+                  {isProxy ? t('candidate_name') : t('your_name')}
                 </label>
                 <input
                   type="text"
                   value={candidateName}
                   onChange={(e) => setCandidateName(e.target.value)}
                   className={inputClass}
-                  placeholder={isProxy ? "e.g. Radhika Sharma" : "e.g. Your Name"}
+                  placeholder={isProxy ? t('eg_radhika') : t('eg_your_name')}
                   style={{ fontSize: '15px' }}
                 />
               </div>
               <div>
                 <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
-                  {isProxy ? 'Candidate Phone' : 'Your Phone'}
+                  {isProxy ? t('candidate_phone') : t('your_phone')}
                 </label>
                 <input
                   type="tel"
@@ -189,14 +184,14 @@ export function HubPage() {
               </div>
               <div>
                 <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
-                  {isProxy ? 'Candidate Location (City)' : 'Your Location (City)'}
+                  {isProxy ? t('candidate_location') : t('your_location')}
                 </label>
                 <input
                   type="text"
                   value={candidateLocation}
                   onChange={(e) => setCandidateLocation(e.target.value)}
                   className={inputClass}
-                  placeholder="e.g. Bangalore"
+                  placeholder={t('eg_bangalore')}
                   style={{ fontSize: '15px' }}
                 />
               </div>
@@ -234,9 +229,6 @@ export function HubPage() {
                 <label className="block text-zinc-500" style={{ fontSize: '13px' }}>
                   {t('video_proof')}
                 </label>
-                <div className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100" style={{ fontSize: '11px' }}>
-                  <Mic size={12} /> Voice-First UI
-                </div>
               </div>
               <motion.div
                 onDragOver={handleDragOver}

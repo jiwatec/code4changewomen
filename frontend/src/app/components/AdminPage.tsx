@@ -3,6 +3,7 @@ import { Play, CheckCircle, Clock, XCircle, BarChart3, ArrowLeft } from 'lucide-
 import { motion, AnimatePresence } from 'motion/react';
 import { toast, Toaster } from 'sonner';
 import { api } from '../services/api';
+import { useLanguage } from '../contexts/LanguageContext';
 interface Submission {
   id: string;
   phoneNumber?: string;
@@ -66,6 +67,7 @@ export function AdminPage() {
   const [skillScore, setSkillScore] = useState(75);
   const [professionalismScore, setProfessionalismScore] = useState(75);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchSubmissions();
@@ -156,26 +158,25 @@ export function AdminPage() {
                   className="text-zinc-900 leading-[0.95] tracking-tight"
                   style={{ ...serif, fontSize: 'clamp(56px, 8vw, 96px)' }}
                 >
-                  Review. Score.
+                  {t('review_score_mint')}
                   <br />
-                  <span className="italic">Mint with care.</span>
+                  <span className="italic">{t('mint_with_care')}</span>
                 </h1>
 
                 <p
                   className="text-zinc-500 mt-6 max-w-xl"
                   style={{ fontSize: '17px', lineHeight: '1.5' }}
                 >
-                  Every certificate you mint unlocks real work for a rural artisan.
-                  Take a moment with each one.
+                  {t('admin_hero_desc')}
                 </p>
               </div>
 
               {/* Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-                <StatCard label="Approved" value={stats.approved} Icon={CheckCircle} accent="text-emerald-500" />
-                <StatCard label="Pending" value={stats.pending} Icon={Clock} accent="text-amber-500" />
-                <StatCard label="Rejected" value={stats.rejected} Icon={XCircle} accent="text-rose-500" />
-                <StatCard label="Total Reviews" value={stats.total} Icon={BarChart3} accent="text-blue-500" />
+                <StatCard label={t('approved')} value={stats.approved} Icon={CheckCircle} accent="text-emerald-500" />
+                <StatCard label={t('pending')} value={stats.pending} Icon={Clock} accent="text-amber-500" />
+                <StatCard label={t('rejected')} value={stats.rejected} Icon={XCircle} accent="text-rose-500" />
+                <StatCard label={t('total_reviews')} value={stats.total} Icon={BarChart3} accent="text-blue-500" />
               </div>
 
               {/* Submissions Card */}
@@ -183,17 +184,17 @@ export function AdminPage() {
                 <div className="flex items-end justify-between mb-8">
                   <div>
                     <h2 className="text-zinc-900" style={{ ...serif, fontSize: '40px', lineHeight: '1' }}>
-                      Pending review
+                      {t('pending_review')}
                     </h2>
                     <p className="text-zinc-500 mt-2" style={{ fontSize: '14px' }}>
-                      Submissions waiting on a validator
+                      {t('submissions_waiting')}
                     </p>
                   </div>
                   <span
                     className="text-zinc-500 px-3 py-1 rounded-full bg-zinc-100"
                     style={{ fontSize: '12px' }}
                   >
-                    {stats.pending} open
+                    {stats.pending} {t('open')}
                   </span>
                 </div>
 
@@ -230,7 +231,7 @@ export function AdminPage() {
                           className="px-5 py-2.5 rounded-full bg-[#2F6BFF] text-white hover:bg-[#1F58E8] transition-colors shadow-[0_1px_2px_rgba(47,107,255,0.3)]"
                           style={{ fontSize: '14px' }}
                         >
-                          Review
+                          {t('review')}
                         </button>
                       </motion.div>
                     ))}
@@ -238,10 +239,10 @@ export function AdminPage() {
                   {submissions.filter((s) => s.status === 'pending').length === 0 && (
                     <div className="text-center py-16">
                       <p className="text-zinc-700" style={{ ...serif, fontSize: '28px' }}>
-                        All caught up
+                        {t('all_caught_up')}
                       </p>
                       <p className="text-zinc-500 mt-2" style={{ fontSize: '14px' }}>
-                        No pending submissions right now
+                        {t('no_pending_submissions')}
                       </p>
                     </div>
                   )}
@@ -250,7 +251,7 @@ export function AdminPage() {
                 {submissions.filter((s) => s.status === 'approved').length > 0 && (
                   <div className="mt-10">
                     <h3 className="text-zinc-900 mb-4" style={{ ...serif, fontSize: '24px' }}>
-                      Recently approved
+                      {t('recently_approved')}
                     </h3>
                     <div className="space-y-2">
                       {submissions
@@ -263,10 +264,10 @@ export function AdminPage() {
                           >
                             <div>
                               <p className="text-zinc-900" style={{ fontSize: '14px' }}>
-                                {submission.id} · {submission.trade || submission.skill}
+                                {submission.id} · {t((submission.trade || submission.skill)?.toLowerCase() || '') === (submission.trade || submission.skill)?.toLowerCase() ? (submission.trade || submission.skill) : t((submission.trade || submission.skill)?.toLowerCase() || '')}
                               </p>
                               <p className="text-zinc-500 mt-0.5" style={{ fontSize: '12px' }}>
-                                Skill {submission.skillScore}/100 · Professionalism{' '}
+                                {t('skill_score')} {submission.skillScore}/100 · {t('professionalism')}{' '}
                                 {submission.professionalismScore}/100
                               </p>
                             </div>
@@ -293,7 +294,7 @@ export function AdminPage() {
                 className="text-zinc-500 hover:text-zinc-900 mb-8 flex items-center gap-2 transition-colors"
                 style={{ fontSize: '14px' }}
               >
-                <ArrowLeft size={16} /> Back to dashboard
+                <ArrowLeft size={16} /> {t('back_to_dashboard')}
               </button>
 
               <div className="mb-10">
@@ -307,7 +308,7 @@ export function AdminPage() {
                   className="text-zinc-900 leading-[0.95] tracking-tight"
                   style={{ ...serif, fontSize: 'clamp(44px, 6vw, 72px)' }}
                 >
-                  Reviewing <span className="italic">{selectedSubmission?.trade || selectedSubmission?.skill}</span>
+                  {t('reviewing')} <span className="italic">{t((selectedSubmission?.trade || selectedSubmission?.skill)?.toLowerCase() || '') === (selectedSubmission?.trade || selectedSubmission?.skill)?.toLowerCase() ? (selectedSubmission?.trade || selectedSubmission?.skill) : t((selectedSubmission?.trade || selectedSubmission?.skill)?.toLowerCase() || '')}</span>
                 </h1>
                 <p className="text-zinc-500 mt-3" style={{ fontSize: '15px' }}>
                   {selectedSubmission?.phone || selectedSubmission?.phoneNumber}
@@ -332,15 +333,15 @@ export function AdminPage() {
               <div className="grid md:grid-cols-2 gap-5 mb-10">
                 {[
                   {
-                    label: 'Skill score',
-                    desc: 'Technical skill demonstrated',
+                    label: t('skill_score'),
+                    desc: t('technical_skill_desc'),
                     value: skillScore,
                     set: setSkillScore,
                     color: '#10b981',
                   },
                   {
-                    label: 'Professionalism',
-                    desc: 'Presentation and clarity',
+                    label: t('professionalism'),
+                    desc: t('professionalism_desc'),
                     value: professionalismScore,
                     set: setProfessionalismScore,
                     color: '#2F6BFF',
@@ -386,14 +387,14 @@ export function AdminPage() {
                   className="px-7 py-3.5 rounded-full bg-white border border-zinc-200 text-zinc-700 hover:border-rose-300 hover:text-rose-600 transition-colors"
                   style={{ fontSize: '15px' }}
                 >
-                  Decline
+                  {t('decline')}
                 </button>
                 <button
                   onClick={handleAccept}
                   className="px-7 py-3.5 rounded-full bg-[#2F6BFF] text-white hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
                   style={{ fontSize: '15px' }}
                 >
-                  Accept & mint certificate
+                  {t('accept_and_mint')}
                 </button>
               </div>
             </div>

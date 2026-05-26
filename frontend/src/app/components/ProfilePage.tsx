@@ -89,12 +89,7 @@ export function ProfilePage() {
         >
           {/* Hero */}
           <div className="text-center mb-10">
-            <div
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/70 border border-zinc-200 text-emerald-600 mb-6 backdrop-blur"
-              style={{ fontSize: '13px' }}
-            >
-              <CheckCircle size={13} /> {t('verified_artisan')}
-            </div>
+
             <h1
               className="text-zinc-900 leading-[0.95] tracking-tight"
               style={{ ...serif, fontSize: 'clamp(40px, 6vw, 64px)' }}
