@@ -66,9 +66,9 @@ export function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-8 relative" style={sans}>
       {/* Brand Logo */}
       <div className="absolute top-8 left-8 flex items-center gap-2 hidden md:flex">
-          <span className="text-zinc-900 leading-none" style={{ ...serif, fontSize: '26px' }}>
-            Kushal
-          </span>
+        <span className="text-zinc-900 leading-none" style={{ ...serif, fontSize: '26px' }}>
+          Kushal
+        </span>
       </div>
 
       <motion.div
@@ -103,11 +103,10 @@ export function LoginPage() {
                         setLanguage(lang);
                         setLangOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2.5 transition-colors ${
-                        language === lang
+                      className={`w-full text-left px-4 py-2.5 transition-colors ${language === lang
                           ? 'bg-zinc-100 text-zinc-900 font-medium'
                           : 'text-zinc-600 hover:bg-zinc-50'
-                      }`}
+                        }`}
                       style={{ fontSize: '14px' }}
                     >
                       {langLabels[lang]}
@@ -164,11 +163,11 @@ export function LoginPage() {
                       />
                     </div>
 
-                      <button
-                        onClick={handleSendOTP}
-                        className="w-full bg-[#2F6BFF] text-white py-4.5 rounded-full hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
-                        style={{ fontSize: '18px', padding: '1.25rem' }}
-                      >
+                    <button
+                      onClick={handleSendOTP}
+                      className="w-full bg-[#2F6BFF] text-white py-4.5 rounded-full hover:bg-[#1F58E8] transition-colors shadow-[0_2px_8px_rgba(47,107,255,0.35)]"
+                      style={{ fontSize: '18px', padding: '1.25rem' }}
+                    >
                       {t('send_otp')}
                     </button>
                   </>
@@ -199,7 +198,7 @@ export function LoginPage() {
                     >
                       {t('verify_continue')}
                     </button>
-                    
+
                     <button
                       onClick={() => setShowOTP(false)}
                       className="w-full mt-3 text-zinc-500 py-2 rounded-full hover:text-zinc-800 transition-colors"

@@ -53,20 +53,20 @@ export function HubPage() {
       toast.error('Please select a skill and upload a video');
       return;
     }
-    
+
     if (!candidateName || !candidatePhone || !candidateLocation) {
       toast.error('Please fill in all details');
       return;
     }
-    
+
     const candidateData = {
       name: candidateName,
       phone: candidatePhone,
       location: candidateLocation
     };
-    
+
     const promise = api.submitSkill(selectedSkill, uploadedFile, candidateData);
-    
+
     toast.promise(promise, {
       loading: 'Uploading video and generating AI transcript...',
       success: 'Video uploaded! Pending Review.',
@@ -121,33 +121,11 @@ export function HubPage() {
 
           {/* Card */}
           <div className="bg-white/85 backdrop-blur rounded-[32px] border border-zinc-200/70 shadow-[0_1px_2px_rgba(16,24,40,0.04)] p-8">
-            
-            {/* Proxy Toggle */}
-            <div className="flex bg-zinc-100 rounded-xl p-1 mb-7 border border-zinc-200/50 relative">
-              <div
-                className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm border border-zinc-200/50 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                style={{
-                  left: isProxy ? 'calc(50% + 2px)' : '4px',
-                }}
-              />
-              <button
-                onClick={() => setIsProxy(false)}
-                className={`flex-1 py-2.5 text-center relative z-10 transition-colors ${
-                  !isProxy ? 'text-zinc-900 font-medium' : 'text-zinc-500 hover:text-zinc-700'
-                }`}
-                style={{ fontSize: '14px' }}
-              >
-                {t('applying_for_myself')}
-              </button>
-              <button
-                onClick={() => setIsProxy(true)}
-                className={`flex-1 py-2.5 text-center relative z-10 transition-colors ${
-                  isProxy ? 'text-zinc-900 font-medium' : 'text-zinc-500 hover:text-zinc-700'
-                }`}
-                style={{ fontSize: '14px' }}
-              >
-                {t('applying_for_someone_else')}
-              </button>
+
+            <div className="mb-6 pb-4 border-b border-zinc-100">
+              <h2 className="text-zinc-900" style={{ ...serif, fontSize: '28px' }}>
+                {t('registration')}
+              </h2>
             </div>
 
             {/* User/Candidate Fields */}
@@ -158,20 +136,20 @@ export function HubPage() {
             >
               <div>
                 <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
-                  {isProxy ? t('candidate_name') : t('your_name')}
+                  {t('your_name')}
                 </label>
                 <input
                   type="text"
                   value={candidateName}
                   onChange={(e) => setCandidateName(e.target.value)}
                   className={inputClass}
-                  placeholder={isProxy ? t('eg_radhika') : t('eg_your_name')}
+                  placeholder={t('eg_your_name')}
                   style={{ fontSize: '15px' }}
                 />
               </div>
               <div>
                 <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
-                  {isProxy ? t('candidate_phone') : t('your_phone')}
+                  {t('your_phone')}
                 </label>
                 <input
                   type="tel"
@@ -184,7 +162,7 @@ export function HubPage() {
               </div>
               <div>
                 <label className="block text-zinc-500 mb-2" style={{ fontSize: '13px' }}>
-                  {isProxy ? t('candidate_location') : t('your_location')}
+                  {t('your_location')}
                 </label>
                 <input
                   type="text"
@@ -236,11 +214,10 @@ export function HubPage() {
                 onDrop={handleDrop}
                 whileHover={{ scale: 1.005 }}
                 transition={{ type: 'spring', stiffness: 300 }}
-                className={`border-2 border-dashed rounded-[28px] p-12 transition-colors cursor-pointer ${
-                  isDragging
+                className={`border-2 border-dashed rounded-[28px] p-12 transition-colors cursor-pointer ${isDragging
                     ? 'border-[#2F6BFF] bg-[#2F6BFF]/5'
                     : 'border-zinc-300 bg-zinc-50/60'
-                }`}
+                  }`}
               >
                 <input
                   type="file"
