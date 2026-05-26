@@ -1,15 +1,15 @@
-# Code4Change Women 👩🏽‍🔧🧵
+# Code4Change Women
 
 An AI-powered Recognition of Prior Learning (RPL) platform designed to validate the skills of rural artisans and connect them directly with local employers.
 
-## 🌟 The Problem & Solution
+## The Problem & Solution
 Millions of skilled rural women (tailors, artisans) lack formal certifications, making it difficult for them to find fair employment. This platform allows artisans—or advocates acting on their behalf—to upload a simple video demonstrating their craft. 
 
 Our **AI Engine** automatically analyzes the video's audio using multilingual transcription (English, Hindi, Kannada) to verify the skill. Once approved, the artisan is issued a verified credential and instantly gains access to a localized, filtered job board where they can directly call employers.
 
 ---
 
-## 🏗 Architecture
+## Architecture
 
 The platform is split into three main micro-components, all connected to a single source of truth database.
 
@@ -27,7 +27,7 @@ The platform is split into three main micro-components, all connected to a singl
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **Proxy Submissions:** Digital literacy shouldn't be a barrier. Advocates (NGO workers, family members) can submit skill verification videos *on behalf* of an artisan using the "Applying for someone else" toggle.
 - **Multilingual AI Verification:** The AI engine understands English, Hindi, and Kannada natively, bridging the language gap for rural workers.
@@ -37,7 +37,7 @@ The platform is split into three main micro-components, all connected to a singl
 
 ---
 
-## 🚀 How It Works (The User Journey)
+## How It Works (The User Journey)
 
 1. **Login & OTP:** The user enters their phone number and authenticates using a 6-digit OTP.
 2. **Video Upload (The Hub):** The user records or uploads a short video demonstrating their skill (e.g., stitching a garment). They fill out their Name, Phone, and City (or the Candidate's details if submitting via Proxy).
@@ -47,7 +47,7 @@ The platform is split into three main micro-components, all connected to a singl
 
 ---
 
-## 💻 Local Setup Instructions
+## Local Setup Instructions
 
 ### Prerequisites
 - Node.js (v18+)
@@ -114,7 +114,7 @@ The app will now be running at `http://localhost:5173`.
 
 ---
 
-## 🛠 Tech Stack Details
+## Tech Stack Details
 - **Frontend:** React, React Router, TailwindCSS, Framer Motion, Lucide Icons, Sonner (Toasts)
 - **Backend:** Python, FastAPI, SQLAlchemy, Uvicorn, Pydantic
 - **AI/ML:** OpenAI Whisper (`whisper-tiny`), FFmpeg
