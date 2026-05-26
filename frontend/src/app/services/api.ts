@@ -30,12 +30,12 @@ async function request(endpoint: string, options: RequestInit = {}) {
 
 export const api = {
   // Artisan Auth
-  requestOTP: (phone: string) => 
+  requestOTP: (phone: string) =>
     request('/users/request-otp', {
       method: 'POST',
       body: JSON.stringify({ phone }),
     }),
-  
+
   verifyOTP: (phone: string, otp: string) =>
     request('/users/verify-otp', {
       method: 'POST',
@@ -55,7 +55,7 @@ export const api = {
       method: 'POST',
       body: formData,
     }),
-    
+
   loginVolunteer: (email: string, password: string) =>
     request('/volunteers/login', {
       method: 'POST',
@@ -64,7 +64,7 @@ export const api = {
 
   // Artisan Actions
   getProfile: () => request('/users/profile'),
-  
+
   submitSkill: (trade: string, file: File, candidateData?: any) => {
     const formData = new FormData();
     formData.append('trade', trade);
@@ -87,7 +87,7 @@ export const api = {
 
   // Volunteer Actions
   getVolunteerDashboard: () => request('/volunteers/dashboard'),
-  
+
   addVolunteerCertification: (formData: FormData) =>
     request('/volunteers/certifications', {
       method: 'POST',
@@ -96,7 +96,7 @@ export const api = {
 
   // Validator Actions
   getPendingSubmissions: () => request('/admin/submissions/pending'),
-  
+
   approveSubmission: (id: string, skillScore: number, professionalismScore: number) =>
     request(`/admin/submissions/${id}/approve?skillScore=${skillScore}&professionalismScore=${professionalismScore}`, {
       method: 'POST',

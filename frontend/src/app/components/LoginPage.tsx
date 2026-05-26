@@ -63,12 +63,19 @@ export function LoginPage() {
     'w-full bg-zinc-50/80 border border-zinc-200 rounded-2xl px-4 py-3.5 text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#2F6BFF]/30 focus:border-[#2F6BFF] transition-all';
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8" style={sans}>
+    <div className="min-h-screen flex items-center justify-center p-8 relative" style={sans}>
+      {/* Brand Logo */}
+      <div className="absolute top-8 left-8 flex items-center gap-2 hidden md:flex">
+          <span className="text-zinc-900 leading-none" style={{ ...serif, fontSize: '26px' }}>
+            Kushal
+          </span>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-[600px]"
+        className="w-full max-w-[600px] mt-12 md:mt-0"
       >
         {/* Language Switcher (on login page) */}
         <div className="flex justify-end mb-4">

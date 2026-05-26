@@ -32,14 +32,10 @@ export function TopNavigation() {
     <nav className="bg-white/70 backdrop-blur-xl border-b border-zinc-200/70 px-8 py-4 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div
-            className="w-7 h-7 rounded-full bg-zinc-900 text-white flex items-center justify-center"
-            style={{ ...serif, fontSize: '15px' }}
-          >
-            ᛒ
-          </div>
-          <div className="text-zinc-900" style={{ ...serif, fontSize: '22px' }}>
-            {userType === 'artisan' ? t('artisan') : 'Validator'}
+          <div className="flex flex-col">
+            <span className="text-zinc-900 leading-none" style={{ ...serif, fontSize: '26px' }}>
+              Kushal
+            </span>
           </div>
         </div>
 

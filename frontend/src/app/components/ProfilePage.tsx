@@ -196,7 +196,7 @@ export function ProfilePage() {
               <p className="text-zinc-500 mb-6">
                 Upload a video of your skill to get your first verified credential.
               </p>
-              <button 
+              <button
                 onClick={() => navigate('/hub')}
                 className="px-8 py-3 bg-[#2F6BFF] text-white rounded-full"
               >
@@ -252,7 +252,7 @@ export function ProfilePage() {
                                   {t(job.companyKey) === job.companyKey ? job.companyKey : t(job.companyKey)} · {t(job.locationKey) === job.locationKey ? job.locationKey : t(job.locationKey)}
                                 </div>
                               </div>
-                              
+
                               {!isExpanded && (
                                 <button
                                   onClick={() => setExpandedJobId(job.id)}
@@ -263,7 +263,7 @@ export function ProfilePage() {
                                 </button>
                               )}
                             </div>
-                            
+
                             <AnimatePresence>
                               {isExpanded && (
                                 <motion.div
@@ -276,7 +276,7 @@ export function ProfilePage() {
                                   <p className="text-zinc-600 mb-4" style={{ fontSize: '14px', lineHeight: '1.5' }}>
                                     {job.description || "Looking for a skilled verified tailor to join our local team. Must have experience with measurements, cutting, and stitching high-quality garments."}
                                   </p>
-                                  
+
                                   <div className="flex justify-end gap-2">
                                     <button
                                       onClick={() => setExpandedJobId(null)}
