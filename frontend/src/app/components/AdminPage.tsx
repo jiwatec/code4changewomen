@@ -151,12 +151,6 @@ export function AdminPage() {
             <div className="max-w-6xl mx-auto">
               {/* Hero */}
               <div className="flex flex-col items-center text-center mb-14">
-                <div
-                  className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/70 border border-zinc-200 text-zinc-600 mb-6 backdrop-blur"
-                  style={{ fontSize: '13px' }}
-                >
-                  Validator Console · Review skill submissions
-                </div>
 
                 <h1
                   className="text-zinc-900 leading-[0.95] tracking-tight"
